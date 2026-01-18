@@ -1,0 +1,222 @@
+# ==================
+# Week 1 (intro)
+#
+-
+  date: 2026-01-21
+  info: Introduction
+-
+  date: 2026-01-23
+  info: Matrix manipulations
+#
+# ==================
+# Week 2 (background)
+#
+-
+  date: 2026-01-26
+  info: Vector spaces, norms, singular values
+  hw:
+    - info: HW 1 (due 2/2)
+-
+  date: 2026-01-28
+  info: Matrices, norms, canonical forms
+-
+  date: 2026-01-30
+  info: Neumann series, sensitivity, conditioning
+#
+# ==================
+# Week 3 (linear solves)
+#
+-
+  date: 2026-02-02
+  info: Floating point
+  hw:
+    - info: HW 2 (due 2/9)
+-
+  date: 2026-02-04
+  info: Floating point
+-
+  date: 2026-02-06
+  info: Gaussian elimination
+#
+# ==================
+# Week 4 (structured solves)
+#
+-
+  date: 2026-02-09
+  info: Blocking
+  hw:
+    - info: HW 3 (due 2/18)
+-
+  date: 2026-02-11
+  info: Perturbation theory, refinement, Cholesky
+-
+  date: 2026-02-13
+  info: Pivoting, conditioning, error estimation
+#
+# ==================
+# Week 5 (least squares)
+#
+-
+  date: 2026-02-16
+  travel: Dagstuhl
+  break: February break
+-
+  date: 2026-02-18
+  info: Sparse, banded, and structured solves
+  travel: Dagstuhl
+  hw:
+    - info: Proj 1 (due 3/2)
+-
+  date: 2026-02-20
+  info: Intro to least squares
+  travel: Dagstuhl
+#
+# ==================
+# Week 6 (least squares + eigen background)
+#
+-
+  date: 2026-02-23
+  info: Least squares and QR
+-
+  date: 2026-02-25
+  info: Ill-posedness and regularization
+-
+  date: 2026-02-27
+  info: Ill-posedness and regularization
+#
+# ==================
+# Week 7 (eigenvalue methods)
+#
+-
+  date: 2026-03-02
+  info: Applications of eigenvalue problems
+  hw:
+    - info: Proj 2 (due 3/16)
+-
+  date: 2026-03-04
+  info: Power iteration
+-
+  date: 2026-03-06
+  info: From power methods to QR iteration
+#
+# ==================
+# Week 8 (nonlinear solvers in 1D)
+#
+-
+  date: 2026-03-09
+  info: Hessenberg, tridiagonal, and bidiagonal
+-
+  date: 2026-03-11
+  info: Stationary iterations
+-
+  date: 2026-03-13
+  info: Gauss-Seidel convergence, extrapolation
+#
+# ==================
+# Week 9 (linear iterative solvers)
+# Weds is drop deadline
+#
+-
+  date: 2026-03-16
+  info: Krylov subspace iterations
+  hw:
+    - info: HW 4 (due 3/23)
+-
+  date: 2026-03-18
+  info: Nonlinear equations in 1D
+-
+  date: 2026-03-20
+  info: Nonlinear equations in 1D
+#
+# ==================
+# Week 10 (nonlinear eq and optimization)
+#
+-
+  date: 2026-03-23
+  info: Optimization in 1D
+  travel: Simons-HiFiStell meeting
+-
+  date: 2026-03-25
+  info: Nonlinear equations and optimization
+  travel: CSGF
+-
+  date: 2026-03-27
+  info: Newton in many dimensions
+#
+# ==================
+# Break
+#
+-
+  date: 2026-03-30
+  break: Spring break
+-
+  date: 2026-04-01
+  break: Spring break
+-
+  date: 2026-04-03
+  break: Spring break
+#
+# ==================
+# Week 11 (iterations and globalization)
+#
+-
+  date: 2026-04-06
+  info: Gradient descent and Newton for optimization
+  hw:
+    - info: HW 5 (due 4/6)
+-
+  date: 2026-04-08
+  info: Gauss-Newton and nonlinear least squares
+-
+  date: 2026-04-10
+  info: Modified Newton iterations
+#
+# ==================
+# Week 12 (iterations and globalization)
+#
+-
+  date: 2026-04-13
+  info: Quasi-Newton and other iterations
+  hw:
+    - info: HW 6 (due 4/20)
+-
+  date: 2026-04-15
+  info: Line search and globalization
+-
+  date: 2026-04-17
+  info: Trust regions
+#
+# ==================
+# Week 14 (globalization and constraints)
+#
+-
+  date: 2026-04-20
+  info: Homotopy and continuation
+  hw:
+    - info: Proj 3 (due 5/4)
+-
+  date: 2026-04-22
+  info: Constraints and multipliers
+-
+  date: 2026-04-24
+  info: Methods for equality constraints
+#
+# ==================
+# Week 15 (topics)
+#
+-
+  date: 2026-04-27
+  info: Methods for inequality constraints
+-
+  date: 2026-04-29
+  info: Derivative free methods
+-
+  date: 2026-05-01
+  info: Stochastic optimizers
+#
+# ==================
+# Week 16 (wrap-up)
+#
+-
+  date: 2026-05-04
+  info: Review
