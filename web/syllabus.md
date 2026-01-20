@@ -143,8 +143,8 @@ counts toward your grade via points on the midterm and final.
 There will be six one-week homeworks, assigned Friday and due the
 following Friday.  These problems will involve a mix of short answers,
 plots, and computations done in Julia. Homework should be typed and
-submitted on Gradescope.  After they are graded, homework scores will
-be posted to Gradescioe.  Regrade requests must be submitted within
+submitted on CMS.  After they are graded, homework scores will
+be posted to CMS.  Regrade requests must be submitted within
 one week of receiving the graded homework.
 
 There will be three two-week programming projects, to be done either
@@ -280,7 +280,7 @@ To be successful in the course, I ask that you
 
 Unless otherwise stated, all work is due by 11:59 pm on the due date.
 All homework and projects should be submitted via the course
-management system (Gradescope); you are encouraged to submit early versions,
+management system (CMS); you are encouraged to submit early versions,
 since resubmissions up to the deadline are counted without penalty.
 For each assignment, up to three "slip days" are allowed.  Over the
 semester, you may use a total of six slip days.  You may not use slip
