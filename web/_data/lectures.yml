@@ -13,6 +13,10 @@
 -
   date: 2026-01-23
   info: Matrix manipulations
+  notes: 2026-01-23.html
+  ulinks:
+    - info: Slides
+      url: lec/2026-01-23-slides.html
 #
 # ==================
 # Week 2 (background)
