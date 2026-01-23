@@ -1,0 +1,437 @@
+---
+subtitle: Manipulating matrices in Julia
+date: 2026-01-23
+format:
+  revealjs:
+    embed-resources: true
+    code-annotations: below
+    html-math-method: mathjax
+    mermaid-format: svg
+---
+
+# Julia
+
+## Getting started
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+```{julia}
+#|echo: false
+#|output: false
+using Plots
+using LinearAlgebra
+using SparseArrays
+
+include("_common.jl")
+```
+
+<https://julialang.org/>
+
+- Recommended: `juliaup`
+
+## Getting started
+
+<https://www.cs.cornell.edu/~bindel/nmds/>
+
+- See chapter 2 (Julia programming)
+- You will not need all of the macro stuff!
+
+## Jupyter, Pluto, Quarto
+
+For noodling around, *notebook* environments are great
+
+- [Jupyter](https://jupyter.org/)
+  - Many languages: Julia, Python, R, and others
+  - [Google Colab](https://colab.google/) is built on Jupyter
+- [Pluto](https://plutojl.org/)
+  - Julia only
+  - Plain text format, notebooks are Julia files
+  - Reactive notebooks (vs "hidden state")
+  - Will use this for assignments and such
+
+For presentation, I use [Quarto](https://quarto.org/)
+
+## Starting Pluto
+
+After installing Pluto:
+
+```julia
+using Pluto
+Pluto.run()
+```
+
+## For most of this class
+
+Start with
+
+```{julia}
+#| echo: true
+#| output: false
+using LinearAlgebra
+using Plots
+```
+
+## Command line demo!
+
+# What's a matrix?
+
+## Linear algebra
+
+Representation of
+
+- A linear map $\bbR^n \rightarrow \bbR^m$
+- More general linear maps in some basis
+- Maybe other things!  Ex: quadratic forms
+  - More on this next week
+
+## Matrix algebra
+
+$$A \in \bbR^{m \times n}$$
+
+- An array of real numbers
+- Two indices: $a_{ij}$ is row $i$, column $j$
+- An element of a vector space $\bbR^{m \times n}$
+
+## Perspectives
+
+$$A \in \bbR^{m \times n}$$
+
+$$A = \begin{bmatrix} a_{1,:} \\ \vdots \\ a_{m,:} \end{bmatrix}$$
+
+$$A = \begin{bmatrix} a_{:,1} & \ldots & a_{:,n} \end{bmatrix}$$
+
+## Julia
+
+```{julia}
+#| echo: true
+#| output: false
+A = [1.0 2.0; 3.0 5.0]
+B = [7.0 8.0; 9.0 12.0]
+x = [1.0, 2.0]
+y = [3.0, 4.0]
+```
+
+# Charlie's "twelve commandments"
+
+## Commandment 1
+
+Matrix $\times$ vector $=$ linear combination of matrix columns.
+
+- Think $A = \begin{bmatrix} a_1 & \ldots & a_n \end{bmatrix}$
+- Then $Ax = \sum_{j=1}^n a_j x_j$
+
+```{julia}
+#| echo: true
+#| output: true
+function matvec_col(A, x)
+    m, n = size(A)
+    y = zeros(m)
+    for j = 1:n
+        y += A[:,j]*x[j]
+    end
+    y
+end
+
+matvec_col(A, x) ≈ A*x
+```
+
+## Commandment 2
+
+Inner product $=$ sum of products of corresponding elements.
+
+- This is for the *standard* inner product for a *real* vector space:
+  $$x \cdot y = \sum_{j=1}^n x_j y_j$$
+
+```{julia}
+#| echo: true
+#| output: true
+d1 = sum(xi*yi for (xi,yi) in zip(x,y))
+d2 = dot(x, y)
+d3 = y'*x
+
+d1 ≈ d3, d2 ≈ d3
+```
+
+## Commandment 3
+
+Consider $u, v, w \in \bbR^n$ where $n = 10^6$, and let $y = Aw$ for
+$A = uv^T$
+
+```julia
+y = u*v'*w   # Slow!
+
+A = u*v'
+y = A*w      # Also slow!
+
+y = u*(v'*w) # Much better
+```
+
+## Commandment 4
+
+Matrix $\times$ diagonal $=$ scaling of the matrix columns.
+
+```{julia}
+#| echo: true
+#| output: true
+
+A * Diagonal(x), A .* x'
+```
+
+## Commandment 5
+
+Diagonal $\times$ matrix $=$ scaling of the matrix rows.
+
+```{julia}
+#| echo: true
+#| output: true
+Diagonal(x) * A, x .* A
+```
+
+## Commandment 6
+
+Never form an explicit diagonal matrix.
+
+```{julia}
+#| echo: true
+#| output: true
+Diagonal(x), diagm(x)
+```
+
+## Commandment 7
+
+Never form an explicit rank one matrix.
+
+- Storage for $u, v \in \bbR^n$: $O(n)$
+- Computing $u (v^T w)$: $O(n)$ flops
+- Forming $uv^T$: $O(n^2)$ flops and storage
+
+## Commandment 8
+
+Matrix $\times$ matrix $=$ collection of matrix-vector products.
+
+- If $B = \begin{bmatrix} b_1 & \ldots & b_n \end{bmatrix}$ then
+  $AB = \begin{bmatrix} Ab_1 & \ldots & Ab_n \end{bmatrix}$
+  
+```{julia}
+#| echo: true
+#| output: true
+function matmul_col(A, B)
+	m, p = size(A)
+	p, n = size(B)
+	C = zeros(m, n)
+	for j = 1:n
+		C[:,j] = A*B[:,j]
+	end
+	C
+end
+
+matmul_col(A, B) ≈ A*B
+```
+
+## Commandment 9
+
+Matrix $\times$ matrix $=$ collection of dot products.
+
+```{julia}
+#| echo: true
+#| output: true
+function matmul_dots(A, B)
+	m, p = size(A)
+	p, n = size(B)
+	C = zeros(m, n)
+	for i = 1:m
+		for j = 1:n
+			C[i,j] = A[i,:]'*B[:,j]
+		end
+	end
+	C
+end
+
+matmul_dots(A, B) ≈ A*B
+```
+
+## Commandment 10
+
+Matrix $\times$ matrix $=$ sum of rank one matrices.
+
+```{julia}
+#| echo: true
+#| output: true
+function matmul_outer(A, B)
+	m, p = size(A)
+	p, n = size(B)
+	C = zeros(m, n)
+	for k = 1:p
+		C += A[:,k]*B[k,:]'
+	end
+	C
+end
+
+matmul_outer(A, B) ≈ A*B
+```
+
+## Commandment 11
+
+Matrix $\times$ matrix $\implies$ linearly combine rows from the second matrix.
+
+```{julia}
+#| echo: true
+#| output: true
+function matmul_rows(A, B)
+	m, p = size(A)
+	p, n = size(B)
+	C = zeros(m, n)
+	for i = 1:m
+		C[i,:] = A[i,:]'*B
+	end
+	C
+end
+
+matmul_rows(A, B) ≈ A*B
+```
+
+## Commandment 12
+
+Matrix $\times$ matrix $\implies$ linearly combine columns from the
+first matrix.
+
+This is really the same as saying
+
+$$A \begin{bmatrix} b_1 & \ldots &
+  b_n \end{bmatrix} = \begin{bmatrix} Ab_1 & \ldots & Ab_n
+  \end{bmatrix}$$
+
+# Block matrices
+
+## Example
+
+$$M = \begin{bmatrix} A & b \\ c^T & d \end{bmatrix}
+ = \begin{bmatrix} a_{11} & a_{12} & b_1 \\ a_{21} & a_{22} & b_2 \\
+ c_1 & c_2 & d \end{bmatrix}$$
+ 
+## Julia
+ 
+```{julia}
+#| echo: true
+#| output: true
+b = [7; 11]
+c = [13; 14]
+d = 42
+M = [A b; c' d]
+```
+ 
+## Think blocks
+
+```{julia}
+#| echo: true
+#| output: true
+M * [x; 10] ≈
+[A*x + b*10; c'*x + d*10]
+```
+
+## What about
+
+```{julia}
+#| echo: true
+#| output: true
+[I b; c' d] ≈
+[Diagonal(x) b; c' d]
+```
+
+# Matrix shapes
+
+## Dense square matrix
+
+```{julia}
+#| echo: true
+#| output: true
+Arand = rand(5,5)
+```
+
+## Upper triangular
+
+```{julia}
+#| echo: true
+#| output: true
+triu(Arand)
+```
+
+## Strict upper triangle
+
+```{julia}
+#| echo: true
+#| output: true
+triu(Arand,1)
+```
+
+## Upper triangle plus a bit
+
+```{julia}
+#| echo: true
+#| output: true
+triu(Arand,1)
+```
+
+## Upper triangular
+
+```{julia}
+#| echo: true
+#| output: true
+UpperTriangular(Arand)
+```
+
+## Upper triangular
+
+```{julia}
+#| echo: true
+#| output: true
+tril(Arand)
+```
+
+## Upper triangular
+
+```{julia}
+#| echo: true
+#| output: true
+LowerTriangular(Arand)
+```
+
+## Spy plots
+
+```{julia}
+#| echo: true
+#| output: true
+spy(triu(rand(100,100)))
+```
+
+# Data sparsity
+
+## Sparse matrix
+
+For $A \in \bbR^{m \times n}$
+
+- Define $\operatorname{nnz}(A) =$ number of nonzero entries
+- Say $A$ is *sparse* if $\operatorname{nnz}(A) \ll mn$
+- Example: diagonal matrices
+
+## Sparse matrix
+
+Why is $A$ sparse interesting?
+
+- Maybe more compact storage (sparse formats)
+- Maybe faster operations (e.g. matrix-vector multiply is $O(\operatorname{nnz}(A))$)
+
+Will discuss these points more later on
+
+## Data-sparse matrix
+
+A dense matrix can still have compact storage / fast multiply!
+
+Examples:
+
+- Rank one matrix $A = uv^T$
+- Upper triangle of a rank one matrix
+- Topelitz matrix (constant diagonal entries)
+

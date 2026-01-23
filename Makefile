@@ -4,7 +4,7 @@ DEST=cslinux:/courses/cs4220/2026sp
 
 build:
 	(cd web; jekyll build)
-	#(cd lec; quarto render)
+	(cd lec; make)
 
 clean:
 	(cd web; rm -rf _site)

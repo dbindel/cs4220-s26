@@ -1,0 +1,130 @@
+---
+subtitle: Introduction
+date: 2026-01-21
+format:
+  revealjs:
+    embed-resources: true
+    code-annotations: below
+    html-math-method: mathjax
+---
+
+## Welcome!
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+CS 4220/5223 + Math 4260:  
+Numerical Analysis: Linear and Nonlinear Problems
+
+<https://www.cs.cornell.edu/courses/cs4220/2026sp/>
+
+## Topics
+
+- Complements CS 4210 / Math 4250
+- Two parts:
+  - Numerical linear algebra (linear systems, least squares, eigenstuff)
+  - Nonlinear equation solving and continuous optimization
+
+## Learning outcomes
+
+- Analyze sources of error
+- Choose appropriate NLA algorithms
+- Formulate nonlinear equations and optimization problems for solution
+- Analyze local convergence of nonlinear solvers
+- Reason about global convergence of nonlinear solvers
+- Use numerical methods to solve practical problems
+
+## Themes: Correctness
+
+- Know the answer in advance
+- Draw a picture
+- Document, test, and check for errors
+- Build modules and know how they compose
+- Problem formulation and representation matters!
+- Plan convergence monitoring and stopping criteria
+- Avoid numerical anti-patterns
+
+## Themes: Performance
+
+- Time and memory scaling
+- Knowing how to design for speed (and what should be fast)
+- Understand performance tradeoffs in iterations
+- Use of approximations and surrogages
+
+## Prerequisites
+
+- Linear algebra and multivariate calculus
+- Programming knowledge
+  - Assume you can pick up Julia
+- "Sufficient mathematical maturity"
+
+## Enrollment logistics
+
+- There should be plenty of room!
+- Add yourself to the waitlist to get in
+- PIN distribution is managed by Bowers student services (not me)
+
+## Class meetings
+
+- We will not exactly replicate notes (or videos)
+- Some experiments: lecture plus
+  - Live coding exercises
+  - Small group activities
+- Please give feedback on what works or doesn't!
+- If you have to miss, ask a friend for notes
+
+## Homework and projects
+
+- Six solo 1-week homeworks (Monday to Monday)
+  - Mix of short answers, plots, computations, proofs
+- Three 2-week projects (small group)
+  - Longer and on a theme
+- Paper project for 5223 students
+- Up to three slip days per assignment (six total)
+
+## Exams
+
+- Oral midterm (10 minutes standard)
+  - Will run in March on a rolling basis
+- In-person final exam
+
+## Collaboration
+
+- Cite what you use and acknowledge if you got help
+  - From a book or article
+  - From the TA
+  - From a peer
+  - From some online resource
+- Stick to general discussion (except with partner on a project)
+
+## Grading: 4220/4260
+
+ - Homework: 6% times 5 homeworks (best of 6)
+ - Projects: 10% times 3 projects
+ - Midterm (oral): 10%
+ - Final: 30%
+
+## Grading: 5223
+
+ - Homework: 5% times 5 homeworks (best of 6)
+ - Paper project: 5%
+ - Projects: 10% times 3 projects
+ - Midterm (oral): 10%
+ - Final: 30%
+
+## AI tools
+
+- *May*: search, explore and review, and practice course concepts
+  - But the summaries aren't always right!
+  - Don't be too credulous -- if you are, it's on you
+- *May not*: use AI for writing code or solutions
+  - It's hard for us to check this
+  - But we can ask you to come by and explain your solution
+
+## Academic integrity
+
+- If you are in a jam, *talk to us*
+  - We can help you plan
+  - This is easiest if you ask early!
+- When in doubt, cite

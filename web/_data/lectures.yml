@@ -4,6 +4,12 @@
 -
   date: 2026-01-21
   info: Introduction
+  notes: 2026-01-21.html
+  ulinks:
+    - info: Intro
+      url: lec/2026-01-21-intro.html
+    - info: BLAS
+      url: lec/2026-01-21-blas.html
 -
   date: 2026-01-23
   info: Matrix manipulations

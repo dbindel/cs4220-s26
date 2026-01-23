@@ -1,0 +1,444 @@
+---
+subtitle: BLAS and basic operations
+date: 2026-01-21
+format:
+  revealjs:
+    embed-resources: true
+    code-annotations: below
+    html-math-method: mathjax
+    mermaid-format: svg
+---
+
+# Matrix algebra and linear algebra
+
+## Linear algebra
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+```{julia}
+#|echo: false
+#|output: false
+using Plots
+using LinearAlgebra
+using SparseArrays
+
+include("_common.jl")
+```
+
+Focus on:
+
+- Abstract vector spaces
+- Mappings on/between those spaces
+- Invariant properties
+
+## Matrix computations
+
+Add concern with:
+
+- Matrix shapes
+- Graph of a matrix
+- Efficient representations
+
+... all of which are basis-dependent!
+
+# Dense matrix basics
+
+## The basics
+
+Build on *Basic Linear Algebra Subroutines* (BLAS):
+
+- **Level 1**: Vector operations (e.g. $y^T x$)
+- **Level 2**: Matrix-vector operation (e.g. $Ax$)
+- **Level 3**: Matrix-matrix operations (e.g. $AB$)
+
+Arithmetic costs are $O(n^1)$, $O(n^2)$, and $O(n^3)$, respectively.
+
+## Computation and memory
+
+Worry about two costs:
+
+- Storage used
+- Time used
+  - For arithmetic...
+  - *and* for data movement
+
+Data movement time varies a *lot*, depending on
+
+- Data layout in memory
+- Access patterns in algorithms
+
+## Memory and meaning
+
+Memory (linearly addressed) contains 1D floating point array:
+
+```{mermaid}
+%%| fig-width: 5.0
+%%| fig-height: 1.0
+block-beta
+  columns 1
+  block
+    A["..."]
+    B["1.0"]
+    C["2.0"]
+    D["3.0"]
+    E["4.0"]
+    F["..."]
+  end
+```
+
+Interpretation:
+
+$$
+x = \begin{bmatrix} 1 \\ 2 \\ 3 \\ 4 \end{bmatrix} \mbox{ or }
+A = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix} \mbox{ or ...}
+$$
+
+## Column major and row major
+
+```{mermaid}
+%%| fig-width: 5.0
+%%| fig-height: 1.0
+block-beta
+  columns 1
+  block
+    A["..."]
+    B["1.0"]
+    C["2.0"]
+    D["3.0"]
+    E["4.0"]
+    F["..."]
+  end
+```
+
+::: {.columns}
+
+::: {.column width="45%"}
+#### Column major
+$$
+A = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}
+$$
+($a_{ij}$ at `data[i+j*m]`)
+
+Fortran, MATLAB, Julia, R, NumPy / SciPy,
+Eigen and Arbmadillo (C++)
+:::
+
+::: {.column width="8%"}
+:::
+
+::: {.column width="45%"}
+#### Row major
+$$
+A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}
+$$
+
+($a_{ij}$ at `data[j+i*n]`)
+
+C and C++ (built in), Pascal
+:::
+
+:::
+
+## Column major in practice
+
+```{julia}
+#| echo: true
+let
+    A = [1.0 3.0;
+         2.0 4.0]
+    A[:]  # View multidimensional array mem as vector
+end
+```
+
+## So what?
+
+Why do you need to know this?
+
+## Consider matvecs
+
+Can be *row-oriented* (`ij`) or *column-oriented* (`ji`)
+
+```{julia}
+#| echo: false
+#| output: asis
+
+print_color_vec(s, colors) =
+    svector(colors) do i,ci
+        scolor(ci, "$(s)_{$(i)}")
+    end
+
+print_color_mat(s, colors) =
+    smatrix(colors) do i,j,cij
+        scolor(cij, "$(s)_{$(i)$(j)}")
+    end
+
+let
+    x, b, r, p, g = "black", "blue", "red", "purple", "lightgray"
+    
+    slatex() do
+        print_color_vec("y", [p; g; g])
+        println(" = ")
+        print_color_mat("a", [b b b; g g g; g g g])
+        print_color_vec("x", [r; r; r])
+    end
+
+    slatex() do
+        print_color_vec("y", [p; p; p])
+        println(" = ")
+        print_color_mat("a", [b g g; b g g; b g g])
+        print_color_vec("x", [r; g; g])
+    end
+end
+```
+
+
+## Which is faster?
+
+::: {.columns}
+
+::: {.column}
+```{.julia}
+function matvec1_row(A, x)
+  m, n = size(A)
+  y = zeros(m)
+  for i = 1:m
+    for j = 1:n
+      y[i] += A[i,j]*x[j]
+    end
+  end
+  y
+end
+```
+:::
+
+::: {.column}
+```{.julia}
+function matvec1_col(A, x)
+  m, n = size(A)
+  y = zeros(m)
+  for j = 1:n
+    for i = 1:m
+      y[i] += A[i,j]*x[j]
+    end
+  end
+  y
+end
+```
+:::
+
+:::
+
+::: {.incremental}
+- Consider $m = n = 4000$ on my laptop (M1 Macbook Pro)
+- `matvec1_row` takes about 118 ms
+- `matvec1_col` takes about 14 ms
+- `A*x` takes about 3 ms
+:::
+
+## Why is it faster?
+
+*Cache locality* takes advantage of *locality of reference*
+
+::: {.incremental}
+- *Temporal locality*: Access the same items close in time
+- *Spatial locality*: Access data in close proximity together
+- Cache hierarchy: small/fast to big/slow
+- Get a *line* at a time (say 64 bytes) -- spatial locality
+- Try to keep recently-used data -- temporal locality
+:::
+
+## Cache on my laptop
+
+Numbers from one core on my laptop:
+
+::: {.incremental}
+- Registers (on chip): use immediately
+- L1 cache (128 KB): 3-4 cycles latency
+- L2 cache (12 MB, shared): 18 cycles latency
+- L3 cache (8 MB, shared): 18 cycle latency
+- M1 uses 128-byte cache lines (64 more common)
+- Main memory: worst case about 350 cycles
+- Note: Can launch several vector ops per cycle!
+:::
+
+## Explanation
+
+::: {.incremental}
+- At 4000-by-4000 8-byte floats, `A` takes about 120 MB
+  - $10\times$ the biggest cache!
+  - So we are mostly going to main memory
+- `matvec1_col` accesses `A` with *unit stride*
+  - This is great for spatial locality!
+  - One cache line is 16 doubles
+  - So about an order of magnitude fewer cache misses
+  - And arithmetic is negligible compared to data transfers
+:::
+
+## Matrix-matrix products
+
+$$c_{ij} = \sum_k a_{ik} b_{kj}$$
+
+- Not two, but *six* possible orderings of $i, j, k$
+- These provide some useful perspectives...
+
+## Matrix-matrix: inner products
+
+`ij(k)` or `ji(k)`: Each entry of $C$ is a dot product of a row of $A$
+and a column of $B$.
+
+```{julia}
+#| echo: false
+#| output: asis
+let
+    x, b, r, p, g = "black", "blue", "red", "purple", "lightgray"    
+    slatex() do
+        print_color_mat("c", [p g g; g g g; g g g])
+        println(" = ")
+        print_color_mat("a", [b b b; g g g; g g g])
+        print_color_mat("b", [r g g; r g g; r g g])
+    end
+end
+```
+
+## Matrix-matrix: outer products
+
+`k(ij)` or `k(ji)`: $C$ is a sum of outer products of column $k$ of
+$A$ and row $k$ of $B$.
+
+```{julia}
+#| echo: false
+#| output: asis
+let
+    x, b, r, p, g = "black", "blue", "red", "purple", "lightgray"    
+    slatex() do
+        print_color_mat("c", [p p p; p p p; p p p])
+        println(" = ")
+        print_color_mat("a", [b g g; b g g; b g g])
+        print_color_mat("b", [r r r; g g g; g g g])
+    end
+end
+```
+
+## Matrix-matrix: row matvecs
+
+`i(jk)` or `i(kj)`: Each row of $C$ is a row of $A$ multiplied by $B$
+
+```{julia}
+#| echo: false
+#| output: asis
+let
+    x, b, r, p, g = "black", "blue", "red", "purple", "lightgray"    
+    slatex() do
+        print_color_mat("c", [p p p; g g g; g g g])
+        println(" = ")
+        print_color_mat("a", [b b b; g g g; g g g])
+        print_color_mat("b", [r r r; r r r; r r r])
+    end
+end
+```
+
+## Matrix-matrix: col matvecs
+
+`j(ik)` or `j(ki)`: Each column of $C$ is $A$ times a column of $B$
+
+```{julia}
+#| echo: false
+#| output: asis
+let
+    x, b, r, p, g = "black", "blue", "red", "purple", "lightgray"    
+    slatex() do
+        print_color_mat("c", [p g g; p g g; p g g])
+        println(" = ")
+        print_color_mat("a", [b b b; b b b; b b b])
+        print_color_mat("b", [r g g; r g g; r g g])
+    end
+end
+```
+
+## Matrix-matrix: blocking
+
+- Can do *any* traversal over $(i,j,k)$ index space
+- So organize around blocks: $C_{ij} = \sum_k A_{ij} B_{jk}$
+
+```{julia}
+#| echo: false
+#| output: asis
+let
+    x, b, r, p, g = "black", "blue", "red", "purple", "gray"
+    slatex() do
+        print_color_mat("C", [p b; r g])
+        println(" = ")
+        print_color_mat("c", [p p b b; p p b b; r r g g; r r g g])
+    end
+end
+```
+
+Q: Why is this a useful idea?
+
+## Blocking and cache
+
+::: {.incremental}
+- For *spatial locality*, want unit stride access
+- For *temporal locality*, want lots of re-use
+  - Requires re-use in computation and good access pattern!
+  - Measure re-use via *arithmetic intensity*: flops/memory ops
+- Idea: use small blocks that fit in cache
+  - Simple model: $b$-by-$b$ blocks, explicit cache control
+  - Memory transfers to multiply blocks: $O(b^2)$
+  - Arithmetic costs to multiply blocks: $O(b^3)$
+- Block recursively for better use at multiple cache levels
+:::
+
+## Blocking and linear algebra
+
+For $\mathcal{A} \in L(\calV_1 \oplus \calV_2, \calW_1 \oplus \calW_2)$:
+$$
+  w = \mathcal{A} v \equiv
+  \begin{bmatrix} w_1 \\ w_2 \end{bmatrix} =
+  \begin{bmatrix}
+  \mathcal{A}_{11} & \mathcal{A}_{12} \\ 
+  \mathcal{A}_{21} & \mathcal{A}_{22}
+  \end{bmatrix}
+  \begin{bmatrix} v_1 \\ v_2 \end{bmatrix}
+$$
+where
+$$
+  v_i = \Pi_{\calV_i} v, \quad
+  w_j = \Pi_{\calW_j} w, \quad
+  \mathcal{A}_{ij} = \Pi_{\calW_i} \mathcal{A} |_{\calV_j}
+$$
+Given bases $V_1$, $V_2$, and 
+$V = \begin{bmatrix} V_1 & V_2 \end{bmatrix}$
+for $\calV_1$, $\calV_2$ and $\calV = \calV_1 \oplus \calV_2$
+(and similarly for $\calW$), get matrix representation with same
+block structure as above.
+
+## The difference
+
+```{julia}
+using Plots
+using CSV, DataFrames
+
+p = plot(xlabel="n", ylabel="GFlop/s")
+open("_data/matmul_time_jl.dat", "r") do io
+    file = CSV.File(io; delim=' ', ignorerepeated=true)
+    plot!([row.n for row in file], [row.default for row in file],
+         label="Default", xlabel="n", ylabel="GFlop/s", linewidth=4)
+    plot!([row.n for row in file], [row.inner for row in file],
+          label="Inner", linewidth=4)
+    plot!([row.n for row in file], [row.outer for row in file],
+          label="Outer", linewidth=4)
+end
+p
+```
+
+## Performance the lazy way
+
+How LAPACK does it:
+
+- Organize around block matrices (subspace sums)
+- Do as much as possible with level 3 BLAS calls
+  - Matrix-matrix multiply, rank $k$ update, etc
+- Use *someone else's* well-tuned BLAS library

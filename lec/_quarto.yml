@@ -1,0 +1,33 @@
+project:
+  type: website
+  output-dir: _output
+  render:
+    - "2026-*.qmd"
+
+execute:
+  freeze: auto
+
+bibliography: references.bib
+title: "CS 4220: Numerical Analysis"
+author: David Bindel
+
+#engine: julia
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+  pdf:
+    documentclass: scrartcl
+    pdf-engine: lualatex
+    fig-format: png
+    fig-dpi: 100
+    include-in-header:
+      text: |
+          \usepackage{amsmath}
+          \usepackage{amssymb}
+          \usepackage{fontspec}
+          \usepackage{polyglossia}
+          \setmonofont{DejaVu Sans Mono}[Scale=MatchLowercase]
+          \input{_common.tex}
+

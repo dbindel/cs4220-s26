@@ -140,8 +140,8 @@ counts toward your grade via points on the midterm and final.
 
 ### Homework and projects
 
-There will be six one-week homeworks, assigned Friday and due the
-following Friday.  These problems will involve a mix of short answers,
+There will be six one-week homeworks, assigned Monday and due the
+following Monday.  These problems will involve a mix of short answers,
 plots, and computations done in Julia. Homework should be typed and
 submitted on CMS.  After they are graded, homework scores will
 be posted to CMS.  Regrade requests must be submitted within
@@ -283,8 +283,7 @@ All homework and projects should be submitted via the course
 management system (CMS); you are encouraged to submit early versions,
 since resubmissions up to the deadline are counted without penalty.
 For each assignment, up to three "slip days" are allowed.  Over the
-semester, you may use a total of six slip days.  You may not use slip
-days for the take-home midterm.
+semester, you may use a total of six slip days.
 
 If you need additional accommodation, ask in writing in advance, with
 rationale and a plan for when you will be able to submit the work.
