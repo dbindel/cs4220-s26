@@ -24,6 +24,9 @@
 -
   date: 2026-01-26
   info: Vector spaces, norms, singular values
+  ulinks:
+    - info: Slides
+      url: lec/2026-01-26-slides.html
   hw:
     - info: HW 1 (due 2/2)
 -
