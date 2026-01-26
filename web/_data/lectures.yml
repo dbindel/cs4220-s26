@@ -23,16 +23,18 @@
 #
 -
   date: 2026-01-26
-  info: Vector spaces, norms, singular values
+  info: Linear algebra review
   ulinks:
+    - info: NMDS 4.1-4.2
+      url: https://www.cs.cornell.edu/~bindel/nmds/00-Background/03-LA.html
     - info: Slides
       url: lec/2026-01-26-slides.html
   hw:
     - info: HW 1 (due 2/2)
-      file: hw/hw1.jl.html
+      file: hw1.jl.html
 -
   date: 2026-01-28
-  info: Matrices, norms, canonical forms
+  info: Linear algebra practice
 -
   date: 2026-01-30
   info: Neumann series, sensitivity, conditioning

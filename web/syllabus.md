@@ -17,7 +17,7 @@ Prof: [David Bindel](http://www.cs.cornell.edu/~bindel)
 487 CIS Building  
 Phone: 607-255-5395  
 Email: bindel@cornell.edu  
-OH: TBD (or [by appointment](https://outlook.office365.com/owa/calendar/BindelOH@cornellprod.onmicrosoft.com/bookings/))
+OH: W 9-11, F 1-2 (or [by appointment](https://outlook.office365.com/owa/calendar/BindelOH@cornellprod.onmicrosoft.com/bookings/))
 
 TA: Daniel Cao  
 Email: dyc33@cornell.edu  
