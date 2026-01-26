@@ -108,21 +108,6 @@ For $v \in \mathbb{R}^n$, argue that
 $$\|v\|_\infty \leq \|v\|_2 \leq \sqrt{n} \|v\|_\infty.$$
 """
 
-# ╔═╡ da743cbe-3fd3-4dcd-be79-409a9a630beb
-md"""
-### Solution
-
-By definition,
-
-$$\|v\|_\infty = \max_j |v_j|$$
-
-Therefore
-
-$$\|v\|_\infty = \max_j |v_j| \leq \sum_{j=1}^n |v_j|^2 \leq \sum_{j=1}^n \|v\|_\infty = n \|v\|_\infty.$$
-
-Taking square roots completes the argument.
-"""
-
 # ╔═╡ 2ddbc6bf-cc73-4e84-a538-1e6e21f01d68
 md"""
 ## 5. Consistency of Frobenius norm
@@ -334,7 +319,6 @@ version = "5.15.0+0"
 # ╠═2c2a00cf-d1d5-4a3d-b034-0269bb3fdfad
 # ╟─57b5084f-d50a-40ee-9558-3f3b87656093
 # ╟─c17c4162-9684-48d5-957e-87d7ef747474
-# ╟─da743cbe-3fd3-4dcd-be79-409a9a630beb
 # ╟─2ddbc6bf-cc73-4e84-a538-1e6e21f01d68
 # ╟─a1e400c5-0859-449c-8598-4d2a091f814b
 # ╠═c4efb195-cda6-42ee-b884-d4bed8ede783
