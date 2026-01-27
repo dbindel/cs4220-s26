@@ -136,11 +136,13 @@
 -
   date: 2026-03-16
   info: Krylov subspace iterations
+  travel: Simons/HiFiStell
   hw:
     - info: HW 4 (due 3/23)
 -
   date: 2026-03-18
   info: Nonlinear equations in 1D
+  travel: Simons/HiFiStell
 -
   date: 2026-03-20
   info: Nonlinear equations in 1D
@@ -152,7 +154,6 @@
 -
   date: 2026-03-23
   info: Optimization in 1D
-  travel: Simons-HiFiStell meeting
 -
   date: 2026-03-25
   info: Nonlinear equations and optimization
