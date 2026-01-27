@@ -3,7 +3,8 @@ DOCS=\
 	_output/2026-01-21-intro.html _output/2026-01-21-blas.html \
 	_output/2026-01-23.pdf _output/2026-01-23.html \
 	_output/2026-01-23-slides.html \
-	_output/2026-01-26-slides.html
+	_output/2026-01-26-slides.html \
+	_output/2026-01-30.pdf _output/2026-01-30.html 
 
 all: $(DOCS)
 
