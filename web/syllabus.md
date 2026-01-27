@@ -21,7 +21,7 @@ OH: W 9-11, F 1-2 (or [by appointment](https://outlook.office365.com/owa/calenda
 
 TA: Daniel Cao  
 Email: dyc33@cornell.edu  
-OH: TBD
+OH: F 1-3 in Rhodes 576
 
 TA: Milo Schlittgen-Li  
 Email: ms3626@cornell.edu  
