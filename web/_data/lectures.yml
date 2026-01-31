@@ -49,9 +49,9 @@
   notes: 2026-02-02.html
   ulinks:
     - info: Slides (error basics)
-      url: lec/2026-02-02-err.html
+      url: lec/2026-02-02-slides-err.html
     - info: Slides (floating point)
-      url: lec/2026-02-02-fp.html
+      url: lec/2026-02-02-slides-fp.html
   hw:
     - info: HW 2 (due 2/9)
 -
