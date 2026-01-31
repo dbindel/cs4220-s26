@@ -1,0 +1,259 @@
+---
+title: "CS 4220: Numerical Analysis"
+subtitle: Floating point
+date: 2026-02-02
+format:
+  revealjs:
+    embed-resources: true
+    code-annotations: below
+    html-math-method: mathjax
+    mermaid-format: svg
+    audio:
+      prefix: "./audio-2026-02-02-fp/"
+revealjs-plugins:
+  - audio-slideshow
+---
+
+## Intro
+
+These slides are narrated.  If you want to hear the narration for a
+particular slide, use the mouse to click near the bottom.  We will
+autoplay by default.
+
+(You can press `a` to start autoplaying.)
+
+# Floating point fundamentals
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+```{julia}
+#|echo: false
+#|output: false
+using Plots
+using LinearAlgebra
+using SparseArrays
+```
+
+## Number systems revisited
+
+Base $b$ notation for numbers:
+
+- $b$ symbols (digits) per place
+- $k$th place left of the point is $b^k$ (start $k = 0$)
+- $k$th place right of the point is $b^{-k}$
+
+Decimal and binary are base 10 and base 2, respectively.
+
+Scientific notation works in any base:
+$$
+  m \times b^e, \quad 1 \leq m < b
+$$
+
+## Scientific notation
+
+Consider example decimal fraction:
+$$
+  \frac{1}{3} = 0.\overline{3} = 3.333\ldots \times 10^{-1}
+$$
+Equivalent binary fraction:
+$$
+  \frac{(1)_2}{(11)_2} = 
+  (0.\overline{01})_2 = (1.0101\ldots)_2 \times 2^{-2}
+$$
+
+## An aside: decimal vs binary
+
+Consider $r = p/q$ with $p,q$ relatively prime
+
+- Always have a (maybe repeating) base $b$ fraction
+- Finite iff $b$ and $q$ have same prime factors
+- If repeat, must happen after $< q$ digits
+
+For $1/5$ (for example), have decimal $0.2$, but binary is
+$$
+  \frac{1_2}{(101)_2} = (0.\overline{0011})_2.
+$$
+This mismatch causes great confusion sometimes.
+
+## Binary number formats
+
+- Floating point: $m \times 2^e$ for variable $e$ ($1 \leq m < 2$)
+  - Mostly, with some *exceptional* representations (upcoming)
+  - The standard formats for most of scientific computing
+  - Standardized by IEEE 754 (and 854) committees
+- Fixed point: $m \times 2^e$ for fixed (implicit) $e$
+  - Common in graphics, signal processing applications
+  - Can mostly just manipulate with integer operations
+  - Range is very restricted
+- Different error models (relative vs absolute) -- to discuss
+
+## Normalized floating point numbers
+
+Our standard representations:
+$$
+(-1)^s \times (1.b_1 b_2 \ldots b_{p-1})_2 \times 2^{e-\mathrm{bias}}
+$$
+
+- Three parts: sign, significand (aka mantissa), and exponent
+- Get one "free" bit in significand from normalization
+- Machine epsilon (unit roundoff) is $\macheps = 2^{-p}$
+- All zeros and all ones bit patterns for exceptional values
+
+## Example
+
+Consider 32-bit number `0.2f0`:
+$$\begin{align}
+  &
+  \color{red}{0}\color{gray}{01111100}\color{blue}{10011001100110011001101} \\
+  \rightarrow
+  &
+  (-1)^{\color{red}0} 
+  \times (1.{\color{blue}{10011001100110011001101}})_2
+  \times 2^{{\color{gray}{124}}-127} \\
+=&({\color{red}+} 1) \times ({\color{blue}1.6 + \delta}) \times 2^{\color{gray}-3}
+\end{align}$$
+where $\delta$ represents the *rounding error* from having $p = 24$.
+
+## Subnormals
+
+Consider toy system with $p = 3$.  Have a gap near zero!
+
+![](_fig/subnormal0.svg){.nostretch fig-align="center" width="100%"}
+
+- Can't represent zero (seems like a problem...)
+- Smallest positive / negative are $x_{\pm} = \pm 2^{1-\mathrm{bias}}$
+- Next out are $y_{\pm} = \pm (1+2^{1-p}) \times 2^{1-\mathrm{bias}}$
+- $x_+ - y_+$ is closer to zero than to any normalized number!
+
+## Subnormals
+
+Consider toy system with $p = 3$.  Fill gap with *subnormals*
+ 
+ ![](_fig/subnormal1.svg){.nostretch fig-align="center" width="100%"}
+
+- Indicate with all zeros exponent field
+- Encoding interpreted as
+  $$
+    (-1)^s \times (0.b_1 b_2 \ldots b_{p-1})_2 \times 2^{-\mathrm{bias}}
+  $$
+
+## Zero
+
+Zero(s) are subnormal number(s)!
+
+- The number with all zero bits is `+0.0`
+- There is also `-0.0`
+- Floating point compare doesn't care: `-0.0 == 0.0`
+- *But* `1.0/0.0` and `1.0/-0.0` are different!
+
+## Infinities
+
+- Also want to represent $\pm \infty$ (exact or overflow)
+  - Note: Signed infinities go with signed zeros!
+- Representation:
+  - All ones in the exponent field
+  - All zeros in the significand field
+  - Sign bit interpreted as normal
+
+## Not-a-Number
+
+- Final class of representations is *NaN*
+- Output of $0/0$, $\sqrt{-1}$, etc
+  - May have a meaningful interpretation with more context
+- Representation
+  - All ones in the exponent field
+  - Anything nonzero in the significand field (often all ones)
+  - Sign bit is ignored
+- Arithmetic with NaN is NaN; comparison with NaN is false
+
+## Representation summary
+
+Floating point representations include:
+
+- Normalized numbers
+- Subnormal numbers
+- Infinities
+- NaNs
+
+These close the system -- every floating point operation can yield
+some floating point result.
+
+## Floating point formats
+
+Standard formats per IEEE 754:
+
+| Format | Julia name | $p$ | $e$ bits | $\macheps$                     | bias |
+|--------|------------|-----|----------|--------------------------------|------|
+| Double | `Float64`  | 53  | 11       | $\approx 1.11 \times 10^{-16}$ | 1023 |
+| Single | `Float32`  | 24  | 8        | $\approx 5.96 \times 10^{-8}$  | 127  |
+| Half   | `Float16`  | 11  | 5        | $\approx 4.88 \times 10^{-4}$  | 15   |
+
+## Even more formats!
+
+| Format   | bits | Significand bits | Exponent bits | bias  |
+|----------|------|------------------|---------------|-------|
+| Quad     | 128  | 113              | 15            | 16383 |
+| Double   | 64   | 53               | 11            | 1023  |
+| Single   | 32   | 24               | 8             | 127   |
+| Half     | 16   | 11               | 5             | 15    |
+| TF32     | 19   | 11               | 8             | 127   |
+| BFloat16 | 16   | 8                | 8             | 127   |
+
+# Operations
+
+## Rounding
+
+Write $\fl(\cdot)$ for rounding; so `0.2f0` gives $\fl(0.2)$.
+
+Rounding has different *modes* of operation:
+
+- Round to nearest even (round to nearest, on tie go to 0)
+- Round toward 0
+- Round toward $+\infty$
+- Round toward $-\infty$
+
+Default is round to nearest even (others for interval arithmetic)
+
+## Basic arithmetic
+
+For simple operations $\{ +, \times, \div, \sqrt{\cdot} \}$, return *exact
+result, correctly rounded*, e.g.
+
+- `x + y` $\mapsto \fl(x+y)$,
+- `sqrt(x)` $\mapsto \fl(\sqrt{x})$
+- and so forth
+
+Transcendental functions are hard to correctly round ("table maker's
+dilemma"), so often they allow a little more error.
+
+## Comparisons
+
+Usual greater, less, equal, except:
+
+- `-0.0 == +0.0`
+- NaN in any comparison yields false
+
+. . .
+
+Floating point numbers aren't "fuzzy."  
+(Careful) equality tests are allowed!
+
+## Exceptions
+
+*Exception* when floating point violates some expected behavior
+
+- *Inexact*: Result had to be rounded
+- *Underflow*: Result too small, had to round to subnormal
+- *Overflow*: Result too big, had to round to $\pm \infty$
+- *Divide by zero*: Produced an *exact* $\pm \infty$ (e.g. $1/0$ or $\log(0)$)
+- *Invalid*: Produced NaN
+
+## Reasoning about floating point
+
+- "Exact result, correctly rounded" is still hard to analyze!
+  - True even if results are all normalized numbers
+  - Gets trickier with exceptions beyond "inexact"
+- We want to do linear algebra, not track bits in the computer
+- Want a *model* that captures important bits of floating point

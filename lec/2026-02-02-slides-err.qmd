@@ -1,0 +1,167 @@
+---
+title: "CS 4220: Numerical Analysis"
+subtitle: Error analysis basics
+date: 2026-02-02
+format:
+  revealjs:
+    embed-resources: true
+    code-annotations: below
+    html-math-method: mathjax
+    mermaid-format: svg
+    audio:
+      prefix: "./audio-2026-02-02-err/"
+revealjs-plugins:
+  - audio-slideshow
+---
+
+## Intro
+
+These slides are narrated.  If you want to hear the narration for a
+particular slide, use the mouse to click near the bottom.  We will
+autoplay by default.
+
+(You can press `a` to start autoplaying.)
+
+# Error analysis concepts
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+```{julia}
+#|echo: false
+#|output: false
+using Plots
+using LinearAlgebra
+using SparseArrays
+```
+
+## Algorithmic sources of error
+
+- Care about error or uncertainty of model/data
+- But we also worry about four kinds of algorithm error:
+  - Finite precision error
+  - Truncation and function approximation
+  - Termination of iterations
+  - Statistical error when using randomness
+
+Will try to develop a common framework and vocabulary for thinking
+about both types of errors together.
+
+## Absolute error
+
+$$e_{\mbox{abs}} = |\hat{x}-x|$$
+
+- Same units as $x$
+- Can be misleading without context!
+
+## Relative error
+
+$$e_{\mbox{rel}} = \frac{|\hat{x}-x|}{|x|}$$
+
+- Dimensionless
+- Familiar ("3 percent error")
+- Can be a problem when $x = 0$ (or "close")
+
+## Mixed error
+
+$$e_{\mbox{mix}} = \frac{|\hat{x}-x|}{|x| + \tau}$$
+
+- Makes sense even at $x = 0$
+- Requires a scale parameter $\tau$
+
+## Beyond scalars
+
+Can do all the above with norms
+$$\begin{aligned}
+e_{\mbox{abs}} &= \|\hat{x}-x\| \\
+e_{\mbox{rel}} &= \frac{\|\hat{x}-x\|}{\|x\|} \\
+e_{\mbox{mix}} &= \frac{\|\hat{x}-x\|}{\|x\| + \tau}
+\end{aligned}$$
+
+- Can also give componentwise absolute or relative errors.
+- Dimensions deserve care!
+
+## Forward error
+
+![](_fig/error_fwd.svg){.nostretch fig-align="center" width="80%"}
+
+## Backward error
+
+![](_fig/error_bwd.svg){.nostretch fig-align="center" width="80%"}
+
+## Forward and backward error
+
+Consider $y = f(x)$.  Forward error for $\hat{y}$:
+$$
+  \hat{y}-y
+$$
+Can also consider *backward error* $\hat{x}-x$:
+$$
+  \hat{y} = f(\hat{x})
+$$
+Treats error as a perturbed *input* vs *output*.
+
+## First-order sensitivity
+
+Suppose $y = f(x)$ and perturbed version
+$$
+  \hat{y} = f(\hat{x}).
+$$
+First-order sensitivity from perturbation around $x$:
+$$
+  \|\hat{y}-y\| \leq \|f'(x)\| \|\hat{x}-x\| + O(\|\hat{x}-x\|^2)
+$$
+assuming $f'$ differentiable near $x$.
+
+*But* this is about *absolute* error.
+
+## Condition number
+
+First-order bound on relation between *relative changes* in input and
+output:
+$$
+  \frac{\|\hat{y}-y\|}{\|y\|} \lesssim 
+  \kappa_f(x) \frac{\|\hat{x}-x\|}{\|x\|}.
+$$
+Q: How to get (tight) constant $\kappa_f(x)$?
+
+## Condition number
+
+In general, have
+$$
+\kappa_f(x) = \frac{\|f'(x)\| \|x\|}{\|f(x)\|}
+$$
+
+Run into trouble if
+
+- $f$ is not differentiable (or not at least Lipschitz)
+- $f(x)$ is zero
+
+## Perturbing matrix problems
+
+Consider $\hat{y} = (A+E)x$ vs $y = Ax$ ($A$ invertible).
+$$
+  \frac{\|\hat{y}-y\|}{\|y\|} = \frac{\|Ex\|}{\|y\|} 
+  \leq \kappa(A) \frac{\|E\|}{\|A\|}.
+$$
+What should $\kappa(A)$ be?
+
+. . .
+
+Write $x = A^{-1} y$; then
+$$
+  \frac{\|Ex\|}{\|y\|}
+  = \frac{\|EA^{-1} y\|}{\|y\|} 
+  \leq \|EA^{-1}\| \leq \|E\| \|A^{-1}\|.
+$$
+So $\kappa(A) = \|A\| \|A^{-1}\|$.
+
+## Why this matters
+
+Over next few lectures, will see *backward error analysis*:
+
+- Roundoff is re-interpreted as perturbations to inputs
+  - Backward stable *algorithms* have small backward error
+- Well-conditioned *problems* don't amplify input errors much
+- Backward-stable algorithm + well-conditioned problem = small forward error
