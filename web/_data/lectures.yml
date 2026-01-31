@@ -46,6 +46,12 @@
 -
   date: 2026-02-02
   info: Floating point
+  notes: 2026-02-02.html
+  ulinks:
+    - info: Slides (error basics)
+      url: lec/2026-02-02-err.html
+    - info: Slides (floating point)
+      url: lec/2026-02-02-fp.html
   hw:
     - info: HW 2 (due 2/9)
 -
