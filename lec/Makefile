@@ -8,7 +8,8 @@ DOCS=\
 	_output/2026-02-02.pdf _output/2026-02-02.html \
 	_output/2026-02-02-slides-err.html \
 	_output/2026-02-02-slides-fp.html \
-	_output/2026-02-04.pdf _output/2026-02-04.html
+	_output/2026-02-04.pdf _output/2026-02-04.html \
+	_output/2026-02-06.pdf _output/2026-02-06.html
 
 all: $(DOCS)
 
