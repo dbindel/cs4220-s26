@@ -25,7 +25,7 @@ OH: F 1-3 in Rhodes 576
 
 TA: Milo Schlittgen-Li  
 Email: ms3626@cornell.edu  
-OH: Th 3-5 in Rhodes 406
+OH: Th 3-5 in Malott 301L
 
 ### Catalog description
 
