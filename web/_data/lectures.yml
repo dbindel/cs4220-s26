@@ -72,6 +72,7 @@
   info: Blocking
   hw:
     - info: HW 3 (due 2/18)
+      file: hw3.jl.html
 -
   date: 2026-02-11
   info: Perturbation theory, refinement, Cholesky
