@@ -3,6 +3,10 @@ subtitle: Gaussian elimination
 date: 2026-02-06
 ---
 
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
 # Introduction
 
 For the next few lectures, we will build tools to solve linear systems.
