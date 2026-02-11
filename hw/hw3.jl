@@ -59,7 +59,7 @@ Suppose a symmetric matrix $M \in \mathbb{R}^{n \times n}$ can be written as
 
 $$M = \begin{bmatrix} \alpha & b^T \\ b & H \end{bmatrix}$$
 
-where $\alpha \in \mathbb{R}, b \in \mathbb{R}^{n-1}, H \in \mathbb{R}^{(n-1) \times (n-1)}$.  If $S = H - b^T \alpha^{-1} b^T$ is the Schur complement, find a function $x : \mathbb{R}^{n-1} \rightarrow \mathbb{R}$ such that
+where $\alpha \in \mathbb{R}, b \in \mathbb{R}^{n-1}, H \in \mathbb{R}^{(n-1) \times (n-1)}$.  If $S = H - b \alpha^{-1} b^T$ is the Schur complement, find a function $x : \mathbb{R}^{n-1} \rightarrow \mathbb{R}$ such that
 
 $$y^T S y = z^T M z, \quad z = \begin{bmatrix} x(y) \\ y \end{bmatrix}.$$
 
@@ -70,7 +70,7 @@ Argue that this means that if $M$ is positive definite, then so is $S$.
 md"""
 ## 3. Refined tastes
 
-The function `p3data` returns a double-precision matrix $A \in \mathbb{R}^{5 \times 5$, an LU factorization of $\hat{A}$ rounded to half precision, and a double-precision right hand side $b \in \mathbb{R}^5$.  Implement ten steps of iterative refinement loop from lecture using the factorization of $\hat{A}$ as the solver, and plot the residual norm as a function of the iteration on a semi-logarithmic axis.  Describe why the plot looks the way that it does.
+The function `p3data` returns a double-precision matrix $A \in \mathbb{R}^{5 \times 5}$, an LU factorization of $\hat{A}$ rounded to half precision, and a double-precision right hand side $b \in \mathbb{R}^5$.  Implement ten steps of iterative refinement loop from lecture using the factorization of $\hat{A}$ as the solver, and plot the residual norm as a function of the iteration on a semi-logarithmic axis.  Describe why the plot looks the way that it does.
 """
 
 # ╔═╡ 7b588c39-4396-4352-bae2-9a0a661a0c79
