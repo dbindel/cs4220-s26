@@ -69,16 +69,17 @@
 #
 -
   date: 2026-02-09
-  info: Blocking
+  info: Blocked LU and Cholesky
+  notes: 2026-02-09.html
   hw:
     - info: HW 3 (due 2/18)
       file: hw3.jl.html
 -
   date: 2026-02-11
-  info: Perturbation theory, refinement, Cholesky
+  info: GEPP, backward error analysis, refinement
 -
   date: 2026-02-13
-  info: Pivoting, conditioning, error estimation
+  info: Condition estimation, banded and structured solves
 #
 # ==================
 # Week 5 (least squares)
@@ -89,7 +90,7 @@
   break: February break
 -
   date: 2026-02-18
-  info: Sparse, banded, and structured solves
+  info: Sparse solves
   travel: Dagstuhl
   hw:
     - info: Proj 1 (due 3/2)
