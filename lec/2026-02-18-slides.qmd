@@ -14,6 +14,14 @@ revealjs-plugins:
   - audio-slideshow
 ---
 
+## Intro
+
+These slides are narrated.  If you want to hear the narration for a
+particular slide, use the mouse to click near the bottom.  We will
+autoplay by default.
+
+(You can press `a` to start autoplaying.)
+
 # TL;DR
 
 ::: {.content-hidden unless-format="html"}
