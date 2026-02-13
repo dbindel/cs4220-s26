@@ -94,11 +94,16 @@
   date: 2026-02-18
   info: Sparse solves
   travel: Dagstuhl
+  notes: 2026-02-18.html
+  ulinks:
+    - info: Slides
+      url: lec/2026-02-18-slides.html
   hw:
     - info: Proj 1 (due 3/2)
 -
   date: 2026-02-20
   info: Intro to least squares
+  notes: 2026-02-20.html
   travel: Dagstuhl
 #
 # ==================
