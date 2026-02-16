@@ -100,6 +100,7 @@
       url: lec/2026-02-18-slides.html
   hw:
     - info: Proj 1 (due 3/2)
+      file: proj1.jl.html
 -
   date: 2026-02-20
   info: Intro to least squares
