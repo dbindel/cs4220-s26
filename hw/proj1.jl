@@ -478,15 +478,15 @@ end
 
 # ╔═╡ d5e02d2e-2ca2-41c6-b888-55efcebc0e4c
 md"""
-We can naively use `basic_pivchol!` to compute leading $k$ rows of the factorization to get the low-rank approximation $P \Phi_{XX} P^T \approx R_{12}^T R_{12}$ by computing the full pivoted Cholesky and throwing most of it away:
+We can naively use `basic_pivchol!` to compute leading $k$ rows of the factorization to get the low-rank approximation $P \Phi_{XX} P^T \approx R_{1:}^T R_{1:}$ by computing the full pivoted Cholesky and throwing most of it away:
 """
 
 # ╔═╡ 706f9016-275a-4c03-8877-cdfca8353292
 """
-    p, R12 = naive_greedy_select(ϕ, X, k)
+    p, R1 = naive_greedy_select(ϕ, X, k)
 
 Compute the leading `k`-by-`N` part of the pivoted Cholesky factorization, i.e.
-`ΦXX[p[1:k],p] = R12[:,1:k]'*R12`
+`ΦXX[p[1:k],p] = R1[:,1:k]'*R1`
 """
 function naive_greedy_select(ϕ, X, k)
 	p, R = basic_pivchol!([ϕ(norm(xi-xj)) for xi in eachcol(X), xj in eachcol(X)])
@@ -505,7 +505,7 @@ A better approach, and your main goal for this task, is to write a modified vers
     p, R12 = greedy_select(ϕ, X, k)
 
 Compute the leading `k`-by-`N` part of the pivoted Cholesky factorization, i.e.
-`ΦXX[p[1:k],p] = R12[:,1:k]'*R12`.  This algorithm should take O(k^2 N) time
+`ΦXX[p[1:k],p] = R1[:,1:k]'*R1`.  This algorithm should take O(k^2 N) time
 and O(kN) space.
 """
 function greedy_select(ϕ, X, k)
