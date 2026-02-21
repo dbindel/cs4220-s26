@@ -113,9 +113,11 @@
 -
   date: 2026-02-23
   info: Least squares and QR
+  notes: 2026-02-23.html
 -
   date: 2026-02-25
   info: Ill-posedness and regularization
+  notes: 2026-02-25.html
 -
   date: 2026-02-27
   info: Ill-posedness and regularization
