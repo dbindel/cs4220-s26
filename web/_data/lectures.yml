@@ -128,14 +128,17 @@
 -
   date: 2026-03-02
   info: Applications of eigenvalue problems
+  notes: 2026-03-02.html
   hw:
     - info: Proj 2 (due 3/16)
 -
   date: 2026-03-04
   info: Power iteration
+  notes: 2026-03-04.html
 -
   date: 2026-03-06
   info: From power methods to QR iteration
+  notes: 2026-03-06.html
 #
 # ==================
 # Week 8 (nonlinear solvers in 1D)
