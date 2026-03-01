@@ -132,6 +132,8 @@
   hw:
     - info: Proj 2 (due 3/16)
       file: proj2.jl.html
+    - info: Proposal for 5223 project (due 3/16)
+      file: proj-5223.html
 -
   date: 2026-03-04
   info: Power iteration
