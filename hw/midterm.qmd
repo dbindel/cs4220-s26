@@ -1,0 +1,94 @@
+---
+subtitle: Midterm
+---
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+The oral midterm should take about ten minutes, and will consist of
+two questions.  The first question will be taken from the list below
+(chosen at random).  There will then be a follow-up question which
+will build on the initial question.  One sheet of hand-written notes
+(front and back) is allowed.  You may also ask for hints (for partial
+credit).  The exam overall will be ten points, with the following
+rubric:
+
+- 2 points: Student communicated timing clearly (e.g. signing up on
+  the sheet) and showed up on time.
+- 4 points per problem on the following scale
+  - 4 points: Gave a clear and correct answer with no prompting
+    (though clarifying questions to me are allowed)
+  - 3 points: Gave a mostly correct answer, possibly with some minimal
+    prompting, hints, or consulting a reference
+  - 2 points: Got the crux of the answer, but potentially with
+    significant gaps or major hints required
+  - 1 points: Appeared to understand the question, really didn't get
+    the answer
+  - 0 points: Blank stare or skipped question
+
+I anticipate the class median will probably be around 7-8 of 10.
+
+Questions:
+
+1. Consider the function $f_n(x) = \left( (1+x)^n-1 \right)/x$ where
+   $|x| \ll 1$ and $n$ is large.  Direct evaluation of this formula
+   tends to lose a lot of accuracy -- based on your understanding of
+   floating point error analysis, give an error estimate that explains
+   why.
+
+2. Argue that if $A, E \in \mathbb{R}^{n \times n}$ with 
+   $\|E\| \leq \epsilon \|A\|$ and $\kappa(A) \epsilon < 1$, then $A+E$ is
+   invertible.
+
+3. Suppose $E \in \mathbb{R}^{n \times n}$ is a matrix that admits
+   cheap matrix-vector products and that $\|E\| < 1$ in some induced
+   norm.  Describe how to (approximately) solve $(I - E) x = b$ using
+   a Neumann series expansion, without ever forming $E$ explicitly.
+
+4. Suppose $Q : [0,1] \rightarrow \mathbb{R}^{n \times n}$ and $Q(s)^T
+   Q(s) = I$ for all $s \in [0,1]$.  Argue that $Q'(s) = Q(s) S(s)$
+   for some skew-symmetric matrix $S(s)$.
+
+5. Suppose you are given a fast routine `invA(b)` that solves $Ax = b$
+   for nonsingular $A \in \mathbb{R}^{n \times n}$.
+   Describe how you might use this to efficiently solve a bordered system
+   $$
+     \begin{bmatrix} A & b \\ c^T & d \end{bmatrix}
+     \begin{bmatrix} x \\ y \end{bmatrix} = 
+     \begin{bmatrix} f \\ g \end{bmatrix}
+   $$
+
+6. Consider the equation
+   $$
+     \begin{bmatrix} A & b \\ c^T & 0 \end{bmatrix}
+     \begin{bmatrix} x \\ y \end{bmatrix} =
+     \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+   $$
+   Argue that if the large matrix is nonsingular, that means 
+   if $y = 0$ then $A$ is singular.
+
+7. Suppose $H \in \mathbb{R}^{n \times n}$ is an upper Hessenberg
+   matrix.  Describe how you would compute a QR factorization of $H$
+   in $O(n^2)$ time.
+
+8. Let $M \in \mathbb{R}^{n \times n}$ be a positive definite matrix,
+   and define the $M$-inner product $\langle x, y \rangle = y^T M x$.
+   Describe how to solve the problem of minimizing $\|Ax-b\|_M^2$
+   where $A \in \mathbb{R}^{n \times r}$ for $r < n$ is a matrix with
+   full column rank.
+
+9. Consider the least squares problem of minimizing $\|Ax-b\|_2^2$
+   where $A \in \mathbb{R}^{m \times n}$ has full column rank.
+   Argue that this is equivalent to solving the linear system
+   $$
+     \begin{bmatrix} I & A \\ A^T & 0 \end{bmatrix}
+     \begin{bmatrix} r \\ x \end{bmatrix} =
+     \begin{bmatrix} b \\ 0 \end{bmatrix}.
+   $$
+
+10. Suppose we compute the Householder QR factorization of a tall
+    skinny matrix $A$, storing the $Q$ implicitly as a product of
+    reflectors $I - \tau v_j v_j^T$.  How would you efficiently extend
+    the factorization to a factorization of
+    $\begin{bmatrix} A & b \end{bmatrix}$?
