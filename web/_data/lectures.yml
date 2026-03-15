@@ -166,16 +166,19 @@
   date: 2026-03-16
   info: Krylov subspace iterations
   travel: Simons/HiFiStell
+  notes: 2026-03-16.html
   hw:
     - info: HW 4 (due 3/23)
 -
   date: 2026-03-18
   info: Nonlinear equations in 1D
   travel: Simons/HiFiStell
+  notes: 2026-03-18.html
 -
   date: 2026-03-20
   info: Nonlinear equations in 1D
   travel: Talk at Mines
+  notes: 2026-03-20.html
 #
 # ==================
 # Week 10 (nonlinear eq and optimization)
