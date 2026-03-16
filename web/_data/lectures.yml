@@ -169,6 +169,7 @@
   notes: 2026-03-16.html
   hw:
     - info: HW 4 (due 3/23)
+      file: hw4.jl.html
 -
   date: 2026-03-18
   info: Nonlinear equations in 1D
