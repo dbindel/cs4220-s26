@@ -128,7 +128,7 @@ $$B = \begin{bmatrix}
 
 and $v^T = \begin{bmatrix} a_{d-1} & a_{d-2} & \ldots & a_0 \end{bmatrix}/a_d$ is the row vector of coefficients for $\hat{f}(x)/a_d$, save for the highest-order coefficient which has been scaled to 1 -- we will assume $a_d \neq 0$.
 
-Let $T(x)$ denote the length $d$ vector with entries $T_0(x)$ through $T_{d-1}(x)$.  We claim that $\hat{f}(x) = 0$ iff $(C_T - xI) T(x) = 0$, i.e. $T(x)$ is an eigenvector of $C_T$ associated with the eigenvalue $x$.  If $f(x)$ is well approximated by $\hat{f}(x)$ on $[-1,1]$, this gives a good way of estimating the zeros of $f(x)$ on $[-1,1]$ as well.
+Let $T(x)$ denote the length $d$ vector with entries $T_{d-1}(x)$ through $T_{0}(x)$.  We claim that $\hat{f}(x) = 0$ iff $(C_T - xI) T(x) = 0$, i.e. $T(x)$ is an eigenvector of $C_T$ associated with the eigenvalue $x$.  If $f(x)$ is well approximated by $\hat{f}(x)$ on $[-1,1]$, this gives a good way of estimating the zeros of $f(x)$ on $[-1,1]$ as well.
 
 ##### Questions
 
