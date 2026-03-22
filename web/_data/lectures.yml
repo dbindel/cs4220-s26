@@ -187,10 +187,12 @@
 -
   date: 2026-03-23
   info: Optimization in 1D
+  notes: 2026-03-23.html
 -
   date: 2026-03-25
   info: Nonlinear equations and optimization
   travel: CSGF
+  notes: 2026-03-25.html
 -
   date: 2026-03-27
   info: Newton in many dimensions
