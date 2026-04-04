@@ -215,7 +215,7 @@
 #
 -
   date: 2026-04-06
-  info: Fixed point and Newton iterations
+  info: Solvers on an autocatalytic example
   hw:
     - info: HW 5 (due 4/6)
 -

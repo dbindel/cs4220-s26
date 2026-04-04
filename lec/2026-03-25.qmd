@@ -43,7 +43,7 @@ from one problem can be applied to another. For example:
   also known as *stationary points* or *critical points*. We find these
   points by solving a system of nonlinear equations.
 
-- We might introduce parameter dependence (as in @eq-cont to
+- We might introduce parameter dependence (as in @eq-cont) to
   understand the physics of a problem or as a mechanism to "sneak up"
   on the solution to otherwise hard problems.
 

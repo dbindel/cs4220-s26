@@ -27,9 +27,14 @@ DOCS=\
 	_output/2026-03-18.pdf _output/2026-03-18.html \
 	_output/2026-03-20.pdf _output/2026-03-20.html \
 	_output/2026-03-23.pdf _output/2026-03-23.html \
-	_output/2026-03-25.pdf _output/2026-03-25.html 
+	_output/2026-03-25.pdf _output/2026-03-25.html \
+	_output/2026-03-27.pdf _output/2026-03-27.html \
+	_output/2026-04-06.pdf _output/2026-04-06.html 
 
 all: $(DOCS)
+
+%.qmd: %.jl
+	lua ../util/ldoc.lua -p quarto -highlight julia $< -o $@
 
 _output/%.html _output/%.pdf: %.qmd
 	quarto render $< --to all
