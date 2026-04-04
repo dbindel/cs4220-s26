@@ -196,6 +196,7 @@
 -
   date: 2026-03-27
   info: Fixed point iterations and Newton
+  notes: 2026-03-27.html
 #
 # ==================
 # Break
@@ -216,6 +217,7 @@
 -
   date: 2026-04-06
   info: Solvers on an autocatalytic example
+  notes: 2026-04-06.html
   hw:
     - info: HW 5 (due 4/6)
 -
