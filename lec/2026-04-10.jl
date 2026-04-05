@@ -95,13 +95,13 @@ function gauss_newton(fJ, x0; rtol=1e-8, maxiter=100,
                       monitor=(x, rnorm)->nothing)
     x = copy(x0)
     for k = 1:maxiter
-	fx, Jx = fJ(x)
-	rnorm = norm(Jx'*fx)
-	monitor(x, rnorm)
-	if norm(Jx'*fx) < rtol
-	    return x
-	end
-	x -= Jx\fx  # Solves the least squares update
+        fx, Jx = fJ(x)
+        rnorm = norm(Jx'*fx)
+        monitor(x, rnorm)
+        if norm(Jx'*fx) < rtol
+            return x
+        end
+        x -= Jx\fx  # Solves the least squares update
     end
     error("Did not reach convergence in $maxiter iterations")
 end
@@ -128,11 +128,11 @@ rate of reaction $R$, according to a relation of the form
 $$
   R = \frac{V_{\max} [S]}{K_M + [S]}
 $$
-Writing the unknowns 
-as $\beta = \begin{bmatrix} V_{\max} & K_M \end{bmatrix}^T$, 
+Writing the unknowns
+as $\beta = \begin{bmatrix} V_{\max} & K_M \end{bmatrix}^T$,
 we solve the nonlinear least squares problem
 $$
-  \mbox{minimize } 
+  \mbox{minimize }
   \sum_i \left( R_i - \frac{\beta_1 S_i}{\beta_2 + S_i} \right)^2
 $$
 over a collected data set.  To get an initial guess, we multiply each
@@ -150,28 +150,28 @@ biox_f, biox_J, biox_H, biox_β0 = let
     # Data set
     S = [0.038; 0.194; 0.425; 0.626;  1.253;  2.500;  3.740]
     R = [0.050; 0.127; 0.094; 0.2122; 0.2729; 0.2665; 0.3317]
-    
+
     # Residual function and Jacobian
     f(β) = R-β[1]*S ./ (β[2] .+ S)
     J(β) = [-S./(β[2] .+ S)  β[1]*S./(β[2] .+ S).^2]
-    
+
     # Hessian function
     function H(β)
-	Hβ = J(β)'*J(β)
-	fβ = f(β)
-	for j = 1:length(fβ)
-	    Hβ += fβ[j] *
+        Hβ = J(β)'*J(β)
+        fβ = f(β)
+        for j = 1:length(fβ)
+            Hβ += fβ[j] *
                 [0.0                   S[j]/(β[2]+S[j])^2           ;
-		 S[j]/(β[2]+S[j])^2   -2.0*β[1]*S[j]/(β[2] + S[j])^3]
-	end
-	Hβ
+                 S[j]/(β[2]+S[j])^2   -2.0*β[1]*S[j]/(β[2] + S[j])^3]
+        end
+        Hβ
     end
-    
+
     # Initial guess based on R(β[2] + S) ≈ β[1]*S
     β0 = [S -R]\(R .* S)
-    
+
     f, J, H, β0
-    
+
 end
 
 #=
@@ -225,16 +225,16 @@ the problem.
 let
     biox_resids = []
     biox_β_gn =
-        gauss_newton(biox_f, biox_J, biox_β0, rtol=1e-14, 
-		     monitor=(x, rnorm)->push!(biox_resids, rnorm))
+        gauss_newton(biox_f, biox_J, biox_β0, rtol=1e-14,
+                     monitor=(x, rnorm)->push!(biox_resids, rnorm))
     p = plot(biox_resids, yscale=:log10,
-	 ylabel=L"\|J^T f(x_k)\|", xlabel=L"k", label="Gauss-Newton")
+         ylabel=L"\|J^T f(x_k)\|", xlabel=L"k", label="Gauss-Newton")
 
     biox_resids_n = []
     biox_β = copy(biox_β0)
     for j = 1:10
-	push!(biox_resids_n, norm(biox_J(biox_β)'*biox_f(biox_β)))
-	biox_β -= biox_H(biox_β)\(biox_J(biox_β)'*biox_f(biox_β))
+        push!(biox_resids_n, norm(biox_J(biox_β)'*biox_f(biox_β)))
+        biox_β -= biox_H(biox_β)\(biox_J(biox_β)'*biox_f(biox_β))
     end
     plot!(biox_resids_n[biox_resids_n .> 0], label="Newton")
 end
@@ -245,7 +245,7 @@ linear convergence, and ends up taking about twice as many iterations
 to drive the residual down close to $10^{-15}$.  At the same time,
 Gauss-Newton doesn't require that we form the Hessian matrix!
 
-## An actual bound for Gauss-Newton (optional)
+# An actual bound for Gauss-Newton (optional)
 
 We are not going to do the actual error iteration for Gauss-Newton
 iteration in class, but it is not that conceptually difficult -- it's
@@ -258,7 +258,7 @@ f(x^*)$.  We assume throughout the derivation that $J$ is Lipschitz
 with constant $L$ (in the 2-norm) and that $\sigma_{\min}(J_*) > L
 \|e^k\|$, implying that
 $$
-  \sigma_{\min}(J_k) \geq 
+  \sigma_{\min}(J_k) \geq
   \sigma_{\min}(J_*) - \|E_k\| \geq \sigma_{\min}(J_*)-L\|e^k\| > 0.
 $$
 By the fundamental theorem of calculus,
@@ -267,7 +267,7 @@ $$
 $$
 Therefore we can write $p^k = -J_k^\dagger f(x^k)$ as
 $$
-  p^k = -(J_k^T J_k)^{-1} J_k^T f_* 
+  p^k = -(J_k^T J_k)^{-1} J_k^T f_*
   -J_k^\dagger \int_0^1 J(x+\xi e^k) e^k \, d\xi
 $$
 Using the fact that $J_*^T f_* = 0$ (by stationarity), we have
@@ -276,12 +276,12 @@ $$
 $$
 which gives us the bound
 $$
-  \|-(J_k^T J_k)^{-1} J_k^T f_*\| \leq 
+  \|-(J_k^T J_k)^{-1} J_k^T f_*\| \leq
   \frac{L \|f^*\| \|e^k\|}{\left( \sigma_{\min}(J_*)-L\|e^k\| \right)^2}.
 $$
 and using the fact that $J_k^\dagger J_k = I$ (assuming $J_k$ full rank), we have
 $$
-  -J_k^\dagger \int_0^1 J(x+\xi e^k) e^k \, d\xi = 
+  -J_k^\dagger \int_0^1 J(x+\xi e^k) e^k \, d\xi =
   -e^k -J_k^\dagger \int_0^1 (J(x+\xi e^k)-J_k) e^k \, d\xi,
 $$
 and by the Lipschitz condition and consistency,
@@ -291,7 +291,7 @@ $$
 $$
 Substituting these bounds into $e^{k+1} = e^k + p^k$, we have
 $$
-  \|e^{k+1}\| \leq 
+  \|e^{k+1}\| \leq
     L \left( \frac{\|f^*\|}{(\sigma_{\min}(J_*)-L\|e^k\|)^2} +
              \frac{\|e^k\|/2}{\sigma_{\min}(J_*)-L\|e^k\|} \right) \|e^k\|
 $$
@@ -299,12 +299,12 @@ and if $L \|f_*\|/\sigma_{\min}(J_*)^2 < 1$ then a sufficient
 condition for error to decrease by some $\alpha < 1$ (where $\alpha$
 does not depend on $e^k$) is
 $$
-  \|e^k\| \leq \frac{2\sigma_{\min}(J_*)}{5L} 
+  \|e^k\| \leq \frac{2\sigma_{\min}(J_*)}{5L}
   \left( 1 - \frac{L\|f_*\|}{\|\sigma_{\min}(J_*)\|^2} \right)
 $$
 and so the Gauss-Newton iteration is guaranteed to converge if
 $$
-  \|e^k\| \leq \frac{2\sigma_{\min}(J_*)}{5L} 
+  \|e^k\| \leq \frac{2\sigma_{\min}(J_*)}{5L}
   \left( 1 - \frac{L\|f_*\|}{\|\sigma_{\min}(J_*)\|^2} \right)
 $$
 
@@ -342,20 +342,20 @@ function levenberg_marquardt(fJ, x0; λ = 1e-3, rtol=1e-8, maxiter=100,
                              monitor=(x, rnorm)->nothing)
     x = copy(x0)
     for k = 1:maxiter
-	fx, Jx = fJ(x)
-	d = sqrt.(sum(Jx.^2, dims=1))
-	rnorm = norm(Jx'*fx)
-	monitor(x, rnorm)
-	if norm(Jx'*fx) < rtol
-	    return x
-	end
-	x -= [Jx; sqrt(λ)*diagm(d[:])]\[fx; zeros(length(x))]
+        fx, Jx = fJ(x)
+        d = sqrt.(sum(Jx.^2, dims=1))
+        rnorm = norm(Jx'*fx)
+        monitor(x, rnorm)
+        if norm(Jx'*fx) < rtol
+            return x
+        end
+        x -= [Jx; sqrt(λ)*diagm(d[:])]\[fx; zeros(length(x))]
     end
     error("Did not reach convergence in $maxiter iterations")
 end
 
-levenberg_marquardt(f, J, x0; λ = 1e-3, rtol=1e-8, maxiter=100, 
-		    monitor=(x, rnorm)->nothing) =
+levenberg_marquardt(f, J, x0; λ = 1e-3, rtol=1e-8, maxiter=100,
+                    monitor=(x, rnorm)->nothing) =
     levenberg_marquardt((x)->(f(x), J(x)), x0, λ=λ, rtol=rtol,
                         maxiter=maxiter, monitor=monitor)
 
@@ -401,74 +401,74 @@ lorx_fJ, lorx_ΦJ, lorx_yy, lorx_p0, lorx_plot = let
     xc_ref = [0.5; 1.3; 1.5]
     Γs_ref = [0.3; 0.1; 0.1]
     cs_ref = [0.6; 1.0; 0.8]
-    
+
     # Reference signal function -- combination of Lorentzians
     ϕref(x, xc, Γs) = Γs/(2π) ./ ((x.-xc).^2 .+ (0.5*Γs).^2)
-    
+
     # Generate noisy signal
     xx = range(0.0, 2.0, length=100)
-    yy = [ϕref(x, xc_ref, Γs_ref)'*cs_ref for x in xx] 
+    yy = [ϕref(x, xc_ref, Γs_ref)'*cs_ref for x in xx]
     yy += 5e-2 * randn(100)
-    
+
     # Residual and Jacobian
     function fJresid(xc, Γ, c)
-	resid = copy(yy)
-	J = zeros(100,9)
-	for k = 1:3
-            
-	    f     = -c[k]*Γ[k]/(2π)
-	    df_dΓ = -c[k]/(2π)
-	    df_dc = -Γ[k]/(2π)
-            
-	    g      = (xx.-xc[k]).^2 .+ (0.5*Γ[k])^2
-	    dg_dxc = -2*(xx.-xc[k])
-	    dg_dΓ  = 0.5*Γ[k]
-            
-	    resid += f./g
-	    J[:,k]   = -f./g.^2 .* dg_dxc
-	    J[:,k+3] = (df_dΓ.*g .- f.*dg_dΓ)./g.^2
-	    J[:,k+6] = df_dc./g
-            
-	end
-	resid, J
+        resid = copy(yy)
+        J = zeros(100,9)
+        for k = 1:3
+
+            f     = -c[k]*Γ[k]/(2π)
+            df_dΓ = -c[k]/(2π)
+            df_dc = -Γ[k]/(2π)
+
+            g      = (xx.-xc[k]).^2 .+ (0.5*Γ[k])^2
+            dg_dxc = -2*(xx.-xc[k])
+            dg_dΓ  = 0.5*Γ[k]
+
+            resid += f./g
+            J[:,k]   = -f./g.^2 .* dg_dxc
+            J[:,k+3] = (df_dΓ.*g .- f.*dg_dΓ)./g.^2
+            J[:,k+6] = df_dc./g
+
+        end
+        resid, J
     end
-    
+
     # Basis vectors and derivatives with respect to xc and Γ
     function ΦJmatrix(xc, Γ)
-	Φ = zeros(100,3)
-	J = zeros(100,6)
-	for k = 1:3
-            
-	    f     = Γ[k]/(2π)
-	    df_dΓ = 1.0/(2π)
-            
-	    g      = (xx.-xc[k]).^2 .+ (0.5*Γ[k])^2
-	    dg_dxc = -2*(xx.-xc[k])
-	    dg_dΓ  = 0.5*Γ[k]
-            
-	    Φ[:,k]   = f./g
-	    J[:,k]   = -f./g.^2 .* dg_dxc
-	    J[:,k+3] = (df_dΓ.*g .- f.*dg_dΓ)./g.^2
-            
-	end
-	Φ, J
+        Φ = zeros(100,3)
+        J = zeros(100,6)
+        for k = 1:3
+
+            f     = Γ[k]/(2π)
+            df_dΓ = 1.0/(2π)
+
+            g      = (xx.-xc[k]).^2 .+ (0.5*Γ[k])^2
+            dg_dxc = -2*(xx.-xc[k])
+            dg_dΓ  = 0.5*Γ[k]
+
+            Φ[:,k]   = f./g
+            J[:,k]   = -f./g.^2 .* dg_dxc
+            J[:,k+3] = (df_dΓ.*g .- f.*dg_dΓ)./g.^2
+
+        end
+        Φ, J
     end
-    
+
     # Residual and Jacobian as functions of p = [xc, Γ, c]
     fJp(p) = fJresid(p[1:3], p[4:6], p[7:9])
-    
+
     # Basis and Jacobian as functions of [xc, Γ]
     ΦJp(p) = ΦJmatrix(p[1:3], p[4:6])
-    
+
     # Initial guess
     p0 = [0.5; 1.2; 1.6; 0.2; 0.2; 0.2; 1.0; 1.0; 1.0]
-    
+
     # Plotting function
     function lorx_plot(p)
-	plot(xx, yy, label="Signal")
-	plot!(xx, yy-fJp(p)[1], style=:dash, label="Approximation")
+        plot(xx, yy, label="Signal")
+        plot!(xx, yy-fJp(p)[1], style=:dash, label="Approximation")
     end
-    
+
     fJp, ΦJp, yy, p0, lorx_plot
 end
 
@@ -498,8 +498,8 @@ lorx_plot(lorx_p0)
 #|fig-cap: Converged solution for Lorentzian fitting example.
 begin
     lorx_resids = []
-    lorx_p = levenberg_marquardt(lorx_fJ, lorx_p0, λ=0.5, 
-		                 monitor=(x, rnorm)->push!(lorx_resids, rnorm))
+    lorx_p = levenberg_marquardt(lorx_fJ, lorx_p0, λ=0.5,
+                                 monitor=(x, rnorm)->push!(lorx_resids, rnorm))
     lorx_plot(lorx_p)
 end
 ```
@@ -532,11 +532,11 @@ In the Lorentzian peak-fitting example, our function $f$ had the form
 $$
   f(x_c, \Gamma, c) = y-\Phi(x_c, \Gamma) c.
 $$
-But if we know the centers and width parameters, then computing the amplitude 
+But if we know the centers and width parameters, then computing the amplitude
 parameters becomes a standard linear least squares problem.  Putting in the
 solution gives us the reduced problem (or *projected* problem)
 $$
-  f_{\mathrm{proj}}(x_c, \Gamma) = 
+  f_{\mathrm{proj}}(x_c, \Gamma) =
   \left( I-\Phi(x_c, \Gamma) \Phi(x_c, \Gamma)^\dagger \right) y = Py
 $$
 where $P = I-\Phi \Phi^\dagger$ is the residual projector.
@@ -551,29 +551,29 @@ lots of experience at this point with computing such derivatives.  Using
 the definition of the pseudoinverse and mumbling over algebra for a while
 yields:
 $$\begin{aligned}
-  \delta P &= 
+  \delta P &=
   -(\delta \Phi) \Phi^\dagger - (\Phi^\dagger)^T (\delta \Phi)^T
   + (\Phi^\dagger)^T (\Phi^T \delta \Phi + (\delta \Phi)^T \Phi) \Phi^\dagger \\
   &= -P (\delta \Phi) \Phi^\dagger - (\Phi^\dagger)^T (\delta \Phi)^T P \\
-  \delta f_{\mathrm{proj}} &= (\delta P) y 
+  \delta f_{\mathrm{proj}} &= (\delta P) y
   = -P (\delta \Phi) c - (\Phi^\dagger)^T (\delta \Phi)^T r
 \end{aligned}$$
 where $c = \Phi^\dagger y$ and $r = f_{\mathrm{proj}} = y - \Phi c$.
 Given the full QR decomposition
 $$
-  \Phi = 
-  \begin{bmatrix} Q_1 & Q_2 \end{bmatrix} 
+  \Phi =
+  \begin{bmatrix} Q_1 & Q_2 \end{bmatrix}
   \begin{bmatrix} R_1 \\ 0 \end{bmatrix}
 $$
 and observing that $P = I-Q_1 Q_1^T = Q_2 Q_2^T$ and
 $(\Phi^\dagger)^T = Q_1 R_1^{-T}$, we have
 $$
-  \delta f_{\mathrm{proj}} 
+  \delta f_{\mathrm{proj}}
   = -Q_2 Q_2^T (\delta \Phi) c - Q_1 R^{-T} (\delta \Phi)^T r \\
-  = -Q 
-  \begin{bmatrix} 
-    R^{-T} (\delta \Phi)^T r \\ 
-    Q_2^T (\delta \Phi) c 
+  = -Q
+  \begin{bmatrix}
+    R^{-T} (\delta \Phi)^T r \\
+    Q_2^T (\delta \Phi) c
   \end{bmatrix}
 $$
 
@@ -591,10 +591,10 @@ In the case of the peak-finding problem, each of the parameters
 affects only one basis vector.  So, for example
 $$
   \frac{\partial f_{\mathrm{proj}}}{\partial x_{c,j}}
-  = -Q 
+  = -Q
   \begin{bmatrix} R^{-T} e_j
-    \left( \frac{\partial \phi_j}{\partial x_{c,j}} \right)^T r \\ 
-    Q_2^T \left(\frac{\partial \phi_i}{\partial x_{c,j}}\right) c_j 
+    \left( \frac{\partial \phi_j}{\partial x_{c,j}} \right)^T r \\
+    Q_2^T \left(\frac{\partial \phi_i}{\partial x_{c,j}}\right) c_j
   \end{bmatrix}
 $$
 and similarly for the derivatives with respect to the width parameters
@@ -605,20 +605,20 @@ $\Gamma_j$.
 function lorx_fJproj(p)
     Φ, JΦ = lorx_ΦJ(p)
     F = qr(Φ)
-    
+
     # Compute c and r (aka f_proj)
     QTyy = F.Q'*lorx_yy
     c = F.R\QTyy[1:3]
     QTyy[1:3] .= 0.0
     r = F.Q*QTyy
-    
+
     # Compute W = -Q'*Jf_proj via the above
     W = (F.Q'*JΦ) .* [c; c]'
     z = JΦ'*r
     invRT = inv(F.R')
     W[1:3,1:3] = invRT .* z[1:3]'
     W[1:3,4:6] = invRT .* z[4:6]'
-    
+
     # Return f_proj and the Jacobian of f_proj
     r, -(F.Q * W)
 end
@@ -640,7 +640,7 @@ test_jacobian(lorx_fJproj, lorx_p0[1:6])
 begin
     lorx_resids_p = []
     lorx_p1 = gauss_newton(lorx_fJproj, lorx_p0[1:6],
-		           monitor=(x, rnorm)->push!(lorx_resids_p, rnorm))
+                           monitor=(x, rnorm)->push!(lorx_resids_p, rnorm))
     lorx_c = lorx_ΦJ(lorx_p1)[1] \ lorx_yy
     lorx_plot([lorx_p; lorx_c])
 end
@@ -688,9 +688,9 @@ $$
 $$
 and this is equivalent to solving the weighted least squares problem
 $$
-  \mbox{minimize } 
-  \left\| 
-    \frac{\psi(r)}{\psi'(r)} + Ap 
+  \mbox{minimize }
+  \left\|
+    \frac{\psi(r)}{\psi'(r)} + Ap
   \right\|_{\operatorname{diag}(\psi'(r))}^2
 $$
 where $\psi(r)/\psi'(r)$ should be interpreted elementwise.
@@ -741,16 +741,16 @@ function irls(A, b, x0, ψ; maxiter=100, rtol=1e-8,
               monitor=(x,rnorm)->nothing)
     x = copy(x0)
     for k = 1:maxiter
-	r = A*x-b
-	ψr = ψ.(r)
-	rnorm = norm(A'*ψr)
-	monitor(x, rnorm)
-	if rnorm < rtol
-	    return x
-	end
-	ws = sqrt.(ψr./r)
-	ws[r .== 0] .= 0.0
-	x = (ws .* A)\(ws .* b)
+        r = A*x-b
+        ψr = ψ.(r)
+        rnorm = norm(A'*ψr)
+        monitor(x, rnorm)
+        if rnorm < rtol
+            return x
+        end
+        ws = sqrt.(ψr./r)
+        ws[r .== 0] .= 0.0
+        x = (ws .* A)\(ws .* b)
     end
 end
 
@@ -781,7 +781,7 @@ at the solution and at the typical level of (non-outlier) noise in the
 data.  A typical trick to do this is to draw random subsets of the
 data until we think that with high probability we have at least one
 subset that contains no outliers.  For each subset, we do an ordinary
-least squares fit, and then judge quality based on 
+least squares fit, and then judge quality based on
 the [median absolute deviation (MAD)](https://en.wikipedia.org/wiki/Median_absolute_deviation),
 i.e. the median absolute value of the residuals.  We return as our
 initial guess for $x$ the solution that has the smallest MAD.  Based
@@ -795,30 +795,30 @@ normal the expected value of the MAD is 0.6745).
 function rr_init(A, b, ρ; nbatch=0, pfail=1e-6)
     m, n = size(A)
     nbatch = max(n, nbatch)
-    
+
     # Scale factor based on median absolute deviation (MAD)
     s_mad(r) = median(abs.(r))/0.645
-    
+
     # Number of trials such that
     #   P(all draws of size n include an outlier) < pfail
     # Analysis assumes m is sufficiently bigger than n that drawing
     # with or without replacement is about the same.
     ntrials = ceil(log(pfail)/log1p(-(1.0-ρ)^nbatch))
-    
+
     # Fit to subsets of the data and take the solution with the
     # smallest median absolute deviation (MAD)
     xbest = zeros(n)
     mad_best = Inf
     for t = 1:ntrials
-	s = randperm(m)[1:nbatch]
-	x = A[s,:]\b[s]
-	mad = median(abs.(b-A*x))
-	if mad < mad_best
-	    xbest[:] = x
-	    mad_best = mad
-	end
+        s = randperm(m)[1:nbatch]
+        x = A[s,:]\b[s]
+        mad = median(abs.(b-A*x))
+        if mad < mad_best
+            xbest[:] = x
+            mad_best = mad
+        end
     end
-    
+
     # Return best fit wrt MAD and estimated scale factor
     xbest, mad_best/0.6745
 end
@@ -860,21 +860,21 @@ rrx_results = let
     A = rand(200,3)
     xref = rand(3)
     b = A*xref + 5e-2 * randn(200)
-    
+
     # Introduce some outliers
     b[50:60] .= 100.0
-    
+
     # Get initialization
     x0, s = rr_init(A, b, 0.1)
-    
+
     # Tukey loss with appropriate scale factor
     ρ(r) = tukey(r, 4.685*s)
     ψ(r) = dtukey(r, 4.685*s)
-    
+
     # Run the IRLS algorithm
     resids = []
     x = irls(A, b, x0, ψ, rtol=1e-12, monitor=(x,rnorm)->push!(resids, rnorm))
-    
+
     # Return scale factor, errors in initial guess and output, and residuals
     s, norm(x0-xref), norm(x-xref), resids
 end
