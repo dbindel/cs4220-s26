@@ -79,12 +79,12 @@ function plot_vs_approx(ϕ, ϕ̂, x0, xr=[-1.0; 1.0], yr=[-1.0; 1.0])
 
     # Plot function vs approximation
     p1 = plot(xx, yy, (x,y)->ϕ([x; y]), st=:contour)
-    plot!([x0[1]], [x0[2]], marker=true, label="\$x_0\$")
+    plot!([x0[1]], [x0[2]], marker=true, label=L"x_0")
     plot!(xx, yy, (x,y)->ϕ̂([x; y]), st=:contour, style=:dash, colorbar=false)
 
     # Plot error
     p2 = plot(xx, yy, (x,y)->ϕ([x; y])-ϕ̂([x; y]), st=:contour)
-    plot!([x0[1]], [x0[2]], marker=true, label="\$x_0\$")
+    plot!([x0[1]], [x0[2]], marker=true, label=L"x_0")
 
     plot(p1, p2, layout=(1,2))
 end
