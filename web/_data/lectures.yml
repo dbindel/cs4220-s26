@@ -223,9 +223,11 @@
 -
   date: 2026-04-08
   info: Gradient descent and Newton for optimization
+  notes: 2026-04-08.html
 -
   date: 2026-04-10
   info: Gauss-Newton and nonlinear least squares
+  notes: 2026-04-10.html
 #
 # ==================
 # Week 12 (iterations and globalization)
