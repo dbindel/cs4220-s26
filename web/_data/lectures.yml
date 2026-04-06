@@ -221,6 +221,9 @@
   hw:
     - info: HW 5 (due 4/13)
       file: hw5.jl.html
+  ulinks:
+    - info: Slides
+      url: lec/2026-04-06-slides.html
 -
   date: 2026-04-08
   info: Gradient descent and Newton for optimization
