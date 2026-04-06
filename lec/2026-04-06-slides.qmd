@@ -1,0 +1,456 @@
+---
+title: "CS 4220: Numerical Analysis"
+subtitle: Fixed point and Newton
+date: 2026-04-06
+engine: jupyter
+format:
+  revealjs:
+    embed-resources: true
+    code-annotations: below
+    html-math-method: mathjax
+---
+
+## Goals for today
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+```{julia}
+#|echo: false
+#|output: false
+
+using LaTeXStrings
+using Printf
+using LinearAlgebra
+using Plots
+```
+
+- Banach fixed point theorem
+- Fixed point iterations
+- Multi-dimensional Newton
+- Examples and coding tips
+
+## Reminder
+
+$G : \Omega \subset \mathbb{R}^n \rightarrow \mathbb{R}^m$ is *Lipshitz* if
+$$
+  \|G(x)-G(y)\| \leq \alpha \|x-y\|
+$$
+A *contraction* if $G(\Omega) \subset \Omega$ and $\alpha < 1$.
+
+## Banach fixed point theorem
+
+If 
+
+- $G : \Omega \rightarrow \Omega$ is a contraction,
+- $\Omega$ is a closed subset of $\mathbb{R}^n$ (or any
+  complete metric space)
+
+then
+$$
+  x^{k+1} = G(x^k) \rightarrow x^*
+$$
+where $x^* = G(x^*)$ is a unique *fixed point* of $G$.
+
+## Claims
+
+For fixed point iteration with a contraction:
+
+- $\|x^{k+1}-x^k\| \leq \alpha^k \|x^1-x^0\|$
+- $\|x^k-x^*\| \leq \alpha^k \|x^0-x^*\|$
+- $\|x^0-x^*\| \leq \frac{\|x^1-x^*\|}{1-\alpha}$
+
+Why?
+
+## Toy problem
+
+$$
+  G(x) = \frac{1}{4} 
+  \begin{bmatrix}
+    x_1 - \cos(x_2) \\
+    x_2 - \sin(x_1)
+  \end{bmatrix}
+$$
+
+Claim: Contraction with $\alpha = 1/2$.
+
+## Toy problem
+
+```{julia}
+#|echo: false
+let
+    xs = []
+    x = [0.0; 0.0]
+    push!(xs, copy(x))
+    for j = 1:20
+        x = [x[1]-cos(x[2]); x[2]-sin(x[1])]/4
+        push!(xs, copy(x))
+    end
+    scatter!([x[1] for x in xs], [x[2] for x in xs],
+             xlabel=L"x_1", ylabel=L"x_2",
+             tickfontsize=12, labelfontsize=12, legendfontsize=12,
+             leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+             topmargin=5Plots.mm,
+             legend=false)
+end
+```
+
+## Toy problem
+
+```{julia}
+#|echo: false
+let
+    dxs = []
+    x = [0.0; 0.0]
+    for j = 1:100
+        xnew = [x[1]-cos(x[2]); x[2]-sin(x[1])]/4
+        push!(dxs, norm(xnew-x))
+        x[:] = xnew
+    end
+    plot(dxs[dxs .> 0], yscale=:log10, xlabel=L"k", ylabel="Update",
+         tickfontsize=12, labelfontsize=12, legendfontsize=12,
+         leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+         topmargin=5Plots.mm, linewidth=4,
+         label="Update norm")
+    plot!(dxs[1] * 2.0.^-(0:30), linestyle=:dash, linewidth=4,
+          label="Bound")
+end
+```
+
+## Aside: Semilog plots in Julia
+
+```julia
+plot(resids[resids .> 0], xlabel=L"k", ylabel="Updates",
+     yscale=:log10, label="Updates")
+plot!(resids_bound, label="Bound")
+```
+
+## Asymptotic behavior
+
+Let $e^k = x^k-x^*$.  Then
+$$
+  e^{k+1} \approx G'(x^*) e^k
+$$
+Asymptotic convergence determined by $\rho(G'(x^*))$
+
+## Toy problem
+
+```{julia}
+#|echo: false
+let
+    dxs = []
+    x = [0.0; 0.0]
+    for j = 1:100
+        xnew = [x[1]-cos(x[2]); x[2]-sin(x[1])]/4
+        push!(dxs, norm(xnew-x))
+        x[:] = xnew
+    end
+    J = [1 sin(x[2]); -cos(x[1]) 1]/4
+    rho = maximum(abs.(eigvals(J)))
+    plot(dxs[dxs .> 0], yscale=:log10, xlabel=L"k", ylabel="Update",
+         tickfontsize=12, labelfontsize=12, legendfontsize=12,
+         leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+         topmargin=5Plots.mm, linewidth=4,
+         label="Update norm")
+    plot!(dxs[1] * rho.^(0:30), linestyle=:dash, linewidth=4,
+          label="Estimate")
+end
+```
+
+## Newton
+
+Goal: Solve $F(x) = 0$ for $F : \mathbb{R}^n \rightarrow \mathbb{R}^n$
+
+Idea: Linearize about $x^k$, set approximation to zero
+$$
+  0 = \bar{F}(x^{k+1}) = F(x^k) + F'(x^k)(x^{k+1}-x^k)
+$$
+Iteration equation:
+$$
+  x^{k+1} = x^k - F'(x^k)^{-1} F(x^k)
+$$
+
+## Toy problem via Newton
+
+$$F(x) = x-G(x) = \frac{1}{4}
+\begin{bmatrix}
+3x_1 + \cos(x_2) \\
+3x_2 + \sin(x_1)
+\end{bmatrix}$$
+
+What is the Jacobian $F'(x)$?
+
+## Toy problem via Newton
+
+```{julia}
+#|echo: false
+let
+    resids = []
+    x = [0.0; 0.0]
+    for j = 1:100
+        F = ( 3*x + [cos(x[2]); sin(x[1])] )/4
+        push!(resids, norm(F))
+        J = [3 -sin(x[2]); cos(x[1]) 3]/4
+        x[:] -= J\F
+    end
+    plot(resids[resids .> 0], yscale=:log10, xlabel=L"k", ylabel="Resid norm",
+         tickfontsize=12, labelfontsize=12, legendfontsize=12,
+         leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+         topmargin=5Plots.mm, linewidth=4, legend=false)
+end
+```
+
+## Quadratic convergence
+
+Newton has *quadratic convergence*:
+
+$$
+  \|e^{k+1}\| = O(\|e^k\|^2)
+$$
+
+- Once it starts converging, convergence is *fast*
+- Looks like a down-facing parabola on semilog plot
+- Conditions: Jacobian shouldn't be approaching singular
+
+## A more interesting example
+
+![](https://upload.wikimedia.org/wikipedia/commons/8/85/Dust_explosion_03.jpg)
+
+## Reaction-diffusion equation
+
+For $x \in [0,1]$ with $x(0) = x(1) = 0$, temperature $u(x,t)$ is
+$$
+  \frac{\partial u}{\partial t} =
+  \frac{\partial^2 u}{\partial x^2} + \lambda \exp(u)
+$$
+
+- Exothermic reaction term $\lambda \exp(u)$
+- Heat diffusion via $\partial^2 u/\partial x^2$
+
+## Equilibrium equation
+
+For $x \in [0,1]$ with $x(0) = x(1) = 0$, equilibrium $u(x)$ satisfies
+$$
+  \frac{d^2 u}{d x^2} + \lambda \exp(u) = 0
+$$
+
+## Second derivatives
+
+Estimate second derivative by *centered difference*:
+$$
+  \frac{d^2 u}{d x^2} =
+  \frac{u(x-h)-2u(x)+u(x+h)}{h^2} + O(h^2)
+$$
+On regular mesh of points $x_0, \ldots x_{N+1}$ with $x_j = jh$,
+$h=1/(N+1)$, discretized equation is:
+$$
+  \frac{u_{j+1} - 2u_j + u_{j-1}}{h^2} + \lambda \exp(u_j) = 0
+$$
+
+## The discretized problem
+
+In math:
+$$
+  F(u) = -h^{-2} T u + \lambda \exp(u) = 0.
+$$
+
+In code:
+```julia
+h = 1/(N+1)
+T = SymTridiagonal(2.0*ones(N), -1*ones(N-1))
+F(u) = -h^-2*(T*u) + exp.(u)
+```
+
+- $T$ is a tridiagonal with $\begin{bmatrix}-1 & 2 & -1 \end{bmatrix}$
+  rows
+- $\exp(u)$ should be interpreted elementwise (`exp.(u)`)
+  
+## Newton setup
+
+$$
+  F(u) = -h^{-2} T u + \lambda \exp(u) = 0.
+$$
+What is the Jacobian $F'(u)$?
+
+## Newton setup
+
+```{julia}
+#|echo: true
+#|output: false
+N = 100
+h = 1/(N+1)
+T = SymTridiagonal(2.0*ones(N), -1*ones(N-1))
+Fautocatalytic(u) = -h^-2*(T*u) + exp.(u)
+Jautocatalytic(u) = -h^-2*T + Diagonal(exp.(u))
+```
+
+## Initial guess
+
+The function $\hat{u}(x) = \alpha x (1-x)$ satisfies
+
+- $\hat{u}(0) = 0$ and $\hat{u}(1) = 0$
+- $\frac{d^2 \hat{u}}{dx^2} + 2\alpha = 0$
+
+Try this as a starting point.
+
+
+## Solver
+
+```{julia}
+#|echo: true
+#|output: false
+function newton_autocatalytic(α, N=100, nsteps=50, rtol=1e-8;
+                              monitor=(u, resid)->nothing)
+    u_all = [α*x*(1-x) for x in range(0.0, 1.0, length=N+2)]
+    u = u_all[2:N+1]
+    for step = 1:nsteps
+        fu = Fautocatalytic(u)
+        resid = norm(fu)
+        monitor(u, resid)
+        if resid < rtol
+            u_all[2:N+1] = u
+            return u_all
+        end
+        u -= Jautocatalytic(u)\fu
+    end
+    error("Newton did not converge after $nsteps steps")
+end
+```
+
+## Monitoring convergence
+
+```julia
+resids0 = []
+u0 = newton_autocatalytic(0.0, monitor=(u,r)->push!(resids0, r))
+plot(resids0[resids0 .> 0], yscale=:log10, xlabel=L"k", ylabel="Resid norm")
+```
+
+## Convergence
+
+```{julia}
+xx = range(0.0, 1.0, N+2)
+resids0 = []
+resids20 = []
+u0 = newton_autocatalytic(0.0, monitor=(u,r)->push!(resids0, r))
+u20 = newton_autocatalytic(20.0, monitor=(u,r)->push!(resids20, r))
+plot(resids0[resids0 .> 0], yscale=:log10, xlabel=L"k", ylabel="Resid norm",
+     tickfontsize=12, labelfontsize=12, legendfontsize=12,
+     leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+     topmargin=5Plots.mm, linewidth=4, legend=false)
+```
+
+## Solution
+
+```{julia}
+plot(xx, u0, xlabel="x", ylabel="u(x)",
+     tickfontsize=12, labelfontsize=12, legendfontsize=12,
+     leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+     topmargin=5Plots.mm, linewidth=4,
+     label=L"\alpha = 0")
+```
+
+## Solutions
+
+```{julia}
+plot(xx, u0, xlabel="x", ylabel="u(x)",
+     tickfontsize=12, labelfontsize=12, legendfontsize=12,
+     leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+     topmargin=5Plots.mm, linewidth=4,
+     label=L"\alpha = 0")
+plot!(xx, u20, linewidth=4, label=L"\alpha = 20")
+```
+
+## Solutions
+
+- There are *two* solutions to the equation!
+- Starting from $\alpha = 0$ recovers the stable solution
+- Starting from $\alpha = 20$ recovers the unstable solution
+- At $\alpha = 40$, slow convergence to the unstable solution
+- At $\alpha = 60$, the iteration fails
+
+## Fixed point iteration
+
+- Newton involves re-factoring at every step
+- What if we approximate the Jacobian?
+
+## Fixed point iteration
+
+```{julia}
+#|echo: true
+#|output: false
+function fp_autocatalytic(α, N=100, nsteps=500, rtol=1e-8;
+                          monitor=(u, resid)->nothing)
+    u_all = [α*x*(1-x) for x in range(0.0, 1.0, length=N+2)]
+    u = u_all[2:N+1]
+    TN = SymTridiagonal(2.0*ones(N), -ones(N-1))
+    F = ldlt(TN)
+    for step = 1:nsteps
+        fu = Fautocatalytic(u)
+        resid = norm(fu)
+        monitor(u, resid)
+        if resid < rtol
+            u_all[2:N+1] = u
+            return u_all
+        end
+        u[:] = F\(exp.(u)/(N+1)^2)
+    end
+    error("Fixed point iteration did not converge after $nsteps steps (α=$α)")
+end
+```
+
+## Convergence
+
+```{julia}
+resids0_fp = []
+u0_fp = fp_autocatalytic(0.0, monitor=(u,r)->push!(resids0_fp, r))
+plot(resids0_fp[resids0_fp .> 0], yscale=:log10,
+     xlabel=L"k", ylabel="Resid norm",
+     tickfontsize=12, labelfontsize=12, legendfontsize=12,
+     leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+     topmargin=5Plots.mm, linewidth=4, legend=false)
+```
+
+## Solution
+
+```{julia}
+plot(xx, u0_fp, xlabel="x", ylabel="u(x)",
+     tickfontsize=12, labelfontsize=12, legendfontsize=12,
+     leftmargin=10Plots.mm, bottommargin=10Plots.mm,
+     topmargin=5Plots.mm, linewidth=4,
+     label=L"\alpha = 0")
+```
+
+## Practical issues
+
+- Existence and uniqueness of solutions not guaranteed
+- Newton converges fast, but need a good initial guess
+- May be unhappy with cost per iteration for Newton
+- May make algebra mistakes with Jacobians!
+
+## Practical issues
+
+- Need adequate convergence criteria
+  - Iteration count
+  - Residual check
+  - Update check
+
+## Your turn
+
+```{julia}
+let
+	p = plot(legend=false)
+	γs = range(1.1, 6.0, length=100)
+	x = 1.0-1.0/γs[1]
+	for γ in γs
+		for k = 1:10
+			x = γ*x*(1-tanh(x))
+			scatter!([γ], [x], color=:black)
+		end
+	end
+	zs = 1.0.-1.0./γs
+	p
+end
+```
+
+$$x_{k+1} = G(x_k), \quad G(x) = \gamma x (1-\tanh(x))$$
