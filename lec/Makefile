@@ -32,7 +32,10 @@ DOCS=\
 	_output/2026-04-06.pdf _output/2026-04-06.html \
 	_output/2026-04-08.pdf _output/2026-04-08.html \
 	_output/2026-04-10.pdf _output/2026-04-10.html \
-	_output/2026-04-06-slides.html 
+	_output/2026-04-06-slides.html \
+	_output/2026-04-13.pdf _output/2026-04-13.html \
+	_output/2026-04-15.pdf _output/2026-04-15.html \
+	_output/2026-04-17.pdf _output/2026-04-17.html 
 
 all: $(DOCS)
 
