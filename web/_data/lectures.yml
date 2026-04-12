@@ -242,6 +242,7 @@
   notes: 2026-04-13.html
   hw:
     - info: HW 6 (due 4/20)
+      file: hw6.jl.html
 -
   date: 2026-04-15
   info: Quasi-Newton and other iterations
