@@ -239,14 +239,17 @@
 -
   date: 2026-04-13
   info: Modified Newton iterations
+  notes: 2026-04-13.html
   hw:
     - info: HW 6 (due 4/20)
 -
   date: 2026-04-15
   info: Quasi-Newton and other iterations
+  notes: 2026-04-15.html
 -
   date: 2026-04-17
   info: Line search and globalization
+  notes: 2026-04-17.html
 #
 # ==================
 # Week 14 (globalization and constraints)
