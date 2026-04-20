@@ -260,6 +260,7 @@
   info: Trust regions
   hw:
     - info: Proj 3 (due 5/4)
+      file: proj3.jl.html
 -
   date: 2026-04-22
   info: Homotopy and continuation
