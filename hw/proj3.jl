@@ -169,7 +169,8 @@ f_{\mathrm{Odd}}(x,y) &= -x^T A y
 \end{aligned}$
 
 where $x$ and $y$ sum to 1.  Argue that if the players follow a mixed strategy
-at Nash equilibrium for this problem, then $A$ cannot be full rank.
+at Nash equilibrium for this problem, then we must have $Ay = \alpha e$
+and $A^T x = \beta e$ for some $\alpha, \beta$, where $e$ is the vector of all ones.
 """
 
 # ╔═╡ 966b0ba9-e44e-4af9-8ff7-f6bed844d261
