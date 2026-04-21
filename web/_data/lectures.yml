@@ -258,12 +258,14 @@
 -
   date: 2026-04-20
   info: Trust regions
+  notes: 2026-04-20.html
   hw:
     - info: Proj 3 (due 5/4)
       file: proj3.jl.html
 -
   date: 2026-04-22
   info: Homotopy and continuation
+  notes: 2026-04-22.html
 -
   date: 2026-04-24
   info: Constraints and multipliers
