@@ -295,7 +295,8 @@ end
 md"""
 #### Question 4
 
-If $A$ has at most one null vector (and $e$ is not a left or right null vector),
+If $A$ has at most a one-dimensional null space
+(and $e$ is not in the range of $A$ or $A^T$),
 then there can be at most one equilibrium of the replicator equations
 on the interior of the simplex; and if such an equilibrium exists, it satisfies
 
