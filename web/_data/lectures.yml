@@ -281,9 +281,11 @@
 -
   date: 2026-04-29
   info: Methods for inequality constraints
+  notes: 2026-04-29.html
 -
   date: 2026-05-01
   info: Derivative free methods
+  notes: 2026-05-01.html
 #
 # ==================
 # Week 16 (wrap-up)
