@@ -44,3 +44,8 @@
   text: Project 3
   due: 2026-05-04
   pluto: proj3
+-
+  text: Practice final
+  due: Never
+  files:
+    - finalp.html

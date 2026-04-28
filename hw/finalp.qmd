@@ -1,0 +1,186 @@
+---
+title: CS 4220
+subtitle: Practice Final
+engine: jupyter
+---
+
+::: {.content-hidden unless-format="html"}
+{{< include _commonm.tex >}}
+:::
+
+You may have one sheet (front and back) of notes.  No devices are
+allowed, and phones should be silenced and kept away for the duration
+of the exam.  All eight questions are worth 6 points; for the
+remaining two points, please make sure to write your name and NetID on
+the front page and write your NetID on each page.
+
+| Problem | Score |
+|---------|-------|
+| NetID?  |       |
+| 1       |       |
+| 2       |       |
+| 3       |       |
+| 4       |       |
+| 5       |       |
+| 6       |       |
+|---------|-------|
+| *Total* |       |
+
+{{< pagebreak >}}
+
+# Problem 1.
+
+Classify each statement as true or false and give a brief explanation.
+
+- The power method always converges to the dominant eigenvector.
+- Gauss-Seidel converges in one step when the matrix $A$ is lower
+  triangular and nonsingular.
+- An algorithm is well-conditioned if small relative changes to the
+  inputs result in small relative changes to the outputs.
+- If $\phi$ is twice continuously differentiable and $x^*$ is
+  a local minimizer with a positive Hessian then Newton will
+  converge quadratically to $x^*$ from starting points $x^0$ that are
+  near enough.
+- If $A = M-N$ where $M$ is invertible and $\|M^{-1} N\| < 1$
+  for some operator norm, then $A$ is nonsingular.
+- If $G : \mathbb{R}^n \rightarrow \mathbb{R}^n$ is a continuously
+  differentiable mapping and $\|G(x)-G(y)\| \leq \|x-y\|$ for all $x,
+  y$, then the iteration $x^{k+1} = G(x^k)$ converges from any $x^0$.
+
+{{< pagebreak >}}
+
+{{< pagebreak >}}
+
+# Problem 2.
+
+The following three graphs show the convergence of three methods of
+minimizing $\phi(x) = -\exp(-x^2)$:
+
+- Gradient descent with step size $-0.5$.
+- Newton iteration for optimization.
+- Newton iteration for finding the minimum of $-\log(-\phi(x))$.
+
+All iterations start at $x_0 = 0.25$  Plot B is invisible because the
+error is exactly zero at $x_1$.
+
+```{julia}
+#|echo: false
+using Plots
+using LaTeXStrings
+
+let
+    xg = 0.25
+    xn = 0.25
+    xq = 0.25
+
+    eg = []
+    en = []
+    eq = []
+
+    for k = 1:10
+        push!(eg, abs(xg))
+        push!(en, abs(xn))
+        push!(eq, abs(xq))
+
+        xg = xg - exp(-xg^2)*xg
+        xn = xn + 2*xn/(4*xn^2-2)
+        xq = 0.0
+    end
+
+    plot(en[en .> 0], yscale=:log10, linewidth=3, label="A",
+         xlabel=L"k", ylabel=L"|x_k-1|")
+    plot!(eq[eq .> 0], label="B", linewidth=3)
+    plot!(eg[eg .> 0], label="C", linewidth=3)
+end
+```
+
+Explain your reasoning.
+
+{{< pagebreak >}}
+
+# Problem 3.
+
+Analyze the convergence of the fixed point iteration
+
+$$x_{k+1} = c - \exp(x_k)$$
+
+You may use without argument that there exists a unique fixed point
+for any $c$.
+
+- What is the equation for a fixed point?
+- Under what conditions will the iteration converge with a good
+  initial guess?
+- What is the asymptotic rate of convergence?
+
+{{< pagebreak >}}
+
+# Problem 4.
+
+Consider the iteration $A x^{k+1} = f(x^k)$ where $A$ is nonsingular,
+$f$ has Lipschitz constant $\alpha$ in the 2-norm,
+and $\alpha < \sigma_{\min}(A)$.
+Argue that the iteration converges to a unique fixed point.
+
+{{< pagebreak >}}
+
+# Problem 5.
+
+Suppose $A \in \mathbb{R}^{n \times n}$ is symmetric positive definite
+and $c \in \mathbb{R}^{n}$ is nonzero.
+Let $g : \mathbb{R} \rightarrow \mathbb{R}$ be twice continuously
+differentiable and $H_g$ everywhere at least positive semidefinite.
+We assume the function `derivsg(z)` returns $g(z), g'(z), g''(z)$.
+We will consider optimization of
+
+$$\phi(x) = \frac{1}{2} x^T A x + g(c^T x)$$
+
+- Write the gradient and Hessian of $\phi$
+- Show that the minimizer satisfies $A x^* = c z^*$
+  for some $z^* \in \mathbb{R}$, and substitute $x = A^{-1} c z$
+  into the objective to get a reduced problem in terms of $z$
+- Write a Julia loop for Newton iteration to find $x^*$ (you may
+  assume a good initial guess $x^0$).  Your code should used the
+  reduced form, so you should only need to solve one linear system
+  with $A$.
+
+{{< pagebreak >}}
+
+# Problem 6.
+
+Consider minimizing the objective
+
+$$\phi(x) = \sum_{i=1}^{n-1} c_i(x_i,x_{i+1})$$
+
+- Argue that the Hessian is symmetric tridiagonal
+- Argue that if the Hessian of each $c_i$ is positive definite,
+  then the Hessian of $\phi$ is also positive definite
+- Write a short Newton loop that forms the Hessian as a
+  `SymTridiagonal` matrix in Julia (the constructor takes a vector
+  of diagonal entries and a vector of off-diagonals).
+  You may assume a function `derivsc(i,xi,xnext)` that computes
+  $c(x_i, x_{i+1})$, its gradient, and its Hessian.
+
+{{< pagebreak >}}
+
+# Problem 7.
+
+Argue that the equations
+
+$$\begin{aligned}
+x &= a + \alpha \cos(y) \\
+y &= b + \alpha \sin(x)
+\end{aligned}$$
+
+have a unique solution for any $a, b \in \mathbb{R}$ and $|\alpha| < 1$.
+
+{{< pagebreak >}}
+
+# Problem 8.
+
+Suppose $A \in \mathbb{R}^{m \times n}$ with $m > n$ is full column
+rank.  Let $A = QR$ be an full QR factorization.
+
+- What is the minimum norm solution to $A^T x = b$?
+- Give an expression for all solutions to $A^T x = b$
+- Write a short Julia code to minimize $\frac{1}{2} x^T H x - x^T d$
+  subject to $A^T x = b$ using the null space method

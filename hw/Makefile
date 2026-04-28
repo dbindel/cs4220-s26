@@ -1,5 +1,6 @@
 DOCS=\
-	_output/midterm.html _output/midterm.pdf
+	_output/midterm.html _output/midterm.pdf \
+	_output/finalp.html _output/finalp.pdf \
 
 all: $(DOCS)
 
